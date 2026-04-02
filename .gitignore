@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+flask_session/
+openjournal.db
+.env
+old.app.py
+.schema
+.tailwind.config.js

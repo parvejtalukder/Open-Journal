@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width">
+        <!-- tailwindCss -->
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <!-- https://favicon.io/emoji-favicons/money-bag/ -->
+        <link href="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" rel="icon">
+        <link href="/static/styles.css" rel="stylesheet">
+        <title>{% block title %}{% endblock %} | Open Journal</title>
+
+    </head>
+
+    <body class="max-w-6xl mx-auto transition-all duration-500">
+    <header class="sticky z-50 top-2">    
+    <nav class="bg-blue-600 text-white px-4 lg:py-3 py-1 shadow mt-2 rounded-t-xl mx-3 lg:mx-auto"> 
+        <div class="max-w-7xl mx-auto flex justify-between lg:justify-around items-center"> 
+            <div onclick="" class="text-lg font-semibold"> Open Journal </div> 
+            <!-- Example right-side nav --> 
+             <div class="hidden md:flex lg:flex">
+                <ul class="flex justify-around items-center space-x-4">
+                    <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">Home</a></li>
+                    <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">International</a></li>
+                    <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">National</a></li>
+                    <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">Literature</a></li>
+                    <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">Entertainment</a></li>
+                    <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">Opinion</a></li>
+                </ul>
+            </div>
+             <div class="space-x-4 flex justify-center items-center"> 
+                {% if session["user_id"] %} 
+                    <a href="/logout" class="hover:underline">Log Out</a> 
+                {% else %} 
+                    <a href="/login" class="hover:underline">Log In</a> 
+                    <a href="/register" class="hidden lg:block hover:underline">Register</a> 
+                {% endif %} 
+                <img src="/static/manu.png" id="menuBtn" class="p-3 block lg:hidden w-14 h-auto">
+            </div> 
+        </div> 
+    </nav>
+    <div class="bg-black overflow-hidden lg:mx-auto mx-3 flex justify-between items-center">
+        <div class="bg-white h-full py-2 px-2 rounded-r-lg z-30">Updates </div>
+        <div id="updates" class="py-3 whitespace-nowrap text-white"></div>
+    </div></header>
+    <ul id="mobileMenu" class="hidden fixed top-20 right-4 w-2/3 bg-slate-700 rounded-md p-5 space-y-2 z-50 shadow-lg md:hidden transition-all duration-800">
+        <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">Home</a></li>
+        <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">International</a></li>
+        <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">National</a></li>
+        <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">Literature</a></li>
+        <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">Entertainment</a></li>
+        <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">Opinion</a></li>
+    </ul>
+
+        {% if get_flashed_messages() %} 
+        <header class="max-w-3xl mx-auto mt-4"> 
+            <div class="bg-blue-100 text-blue-800 px-4 py-3 rounded text-center shadow"> {{ get_flashed_messages() | join(" ") }} </div> 
+        </header> 
+        {% endif %}
+
+        <main class="py-10 lg:mx-auto mx-3"> 
+            {% block main %}{% endblock %}
+        </main>
+
+        <footer>
+            <div class="flex lg:flex-row flex-col justify-around gap-8 bg-blue-200 p-10 rounded-t-xl">
+                <div class="flex-1">
+                    <h2 class="text-lg font-semibold">Open Journal</h2>
+                    <p class="text-justify text-sm">A trusted source for breaking news, in-depth analysis, and cultural insights.</p>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-lg font-semibold">Users</h2>
+                    <ul class="">
+                        <li class="list-none"><a class="no-underline" href="/">Be a Reader</a></li>
+                        <li class="list-none"><a class="no-underline" href="/">Be an Author</a></li>
+                        <!-- <a href="/">Terms of condition</a> -->
+                    </ul>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-lg font-semibold">Company</h2>
+                    <ul class="">
+                        <li class="list-none"><a class="no-underline" href="/">About Us</a></li>
+                        <li class="list-none"><a class="no-underline" href="/">Contact Us</a></li>
+                        <!-- <a href="/">Terms of condition</a> -->
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t font-bold border-blue-800 text-center text-sm text-blue-600 py-2">Open Journal. All rights reserved.</div>
+        </footer>
+        <script src="/static/scripts.js"></script>
+    </body>
+
+</html>
