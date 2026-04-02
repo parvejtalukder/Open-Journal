@@ -5,17 +5,41 @@
 {% endblock %}
 
 {% block main %}
-    <form action="/register" method="post">
-        <img class="mb-3" src="{{ url_for('static', filename='favicon.ico') }}" alt="CS50 Finance">
-        <div class="mb-3">
-            <input required autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text">
+    <form enctype="multipart/form-data" action="/register" method="post" class="flex justify-center items-center p-10">
+        <div class="border-2 border-blue-600 hover:border-blue-50 bg-blue-600 hover:bg-blue-700 duration-1000 transition-all rounded-2xl hover:rounded-3xl lg:w-1/2 w-full flex flex-col gap-0 justify-center items-center p-5">
+            <h2 class="text-2xl text-blue-100 font-bold pb-3 hover:text-blue-50 transition-all duration-1000">Registration</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-1 w-full">
+                <div class="mb-3">
+                <input required autocomplete="off" autofocus class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="name" placeholder="Full name" type="text">
+                </div>
+                <div class="mb-3">
+                <input required autocomplete="off" autofocus class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="username" placeholder="Username" type="text">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-1 w-full">
+            <div class="mb-3 flex justify-center items-center">
+                <input required autocomplete="off" autofocus class="form-control text-white mx-auto p-2 rounded-lg border-1 border-blue-100 file:text-smfile:text-sm file:font-semibold file:bg-blue-10 file:text-blue-100 hover:file:bg-blue-600 focus:ring-1 w-full focus:ring-blue-100 focus:border-blue-100" name="file" placeholder="Photo" type="file">
+                <!-- <input required autocomplete="off" autofocus class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-10 file:text-blue-700 hover:file:bg-blue-200" name="photo" placeholder="Photo" type="file"> -->
+            </div>
+            <div class="mb-3">
+                <input required class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="email" placeholder="Email" type="email">
+            </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-1 w-full">
+            <div class="mb-3">
+                <input required class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="password" placeholder="Password" type="password">
+            </div>
+            <div class="mb-3">
+                <input required class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="confirmation" placeholder="Confirm Password" type="password"> 
+            </div>
+            </div>
+
+            <div class="-mt-1.5 flex justify-center items-center w-full">
+                <input type="submit" class="form-control mx-auto w-full p-2 rounded-lg bg-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-500" value="Register">
+            </div>
+            
+
+            
         </div>
-        <div class="mb-3">
-            <input required class="form-control mx-auto w-auto" name="password" placeholder="Password" type="password">
-        </div>
-        <div class="mb-3">
-            <input required class="form-control mx-auto w-auto" name="confirmation" placeholder="Confirm Password" type="password">
-        </div>
-        <button class="btn btn-primary" type="submit">Register</button>
     </form>
 {% endblock %}

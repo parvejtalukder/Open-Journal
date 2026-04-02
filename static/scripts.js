@@ -1,3 +1,8 @@
+const home = document.getElementById("home");
+
+home.addEventListener("click", () => {
+  window.location.href = "/";
+})
 
 const btn = document.getElementById("menuBtn");
 const menu = document.getElementById("mobileMenu");

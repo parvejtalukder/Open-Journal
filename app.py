@@ -9,8 +9,8 @@ app = Flask(__name__)
 
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
-
+Session(app)        
+      
 db = SQL("sqlite:///openjournal.db")
 
 @app.after_request
@@ -23,8 +23,12 @@ def after_request(response):
 
 @app.route("/")
 def index():
-
-    return render_template("index.html")
+    posts = [
+        {"title": "AI Model Released", "image": "https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png"},
+        {"title": "Global Event", "image": "https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png"},
+        {"title": "Sports Win", "image": "https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png"},
+    ]
+    return render_template("index.html", posts=posts)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -65,8 +69,9 @@ def logout():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    """Register user"""
+    
     if request.method == "POST":
+
         username = request.form.get("username")
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
@@ -101,3 +106,38 @@ def register():
     else: 
         return render_template("register.html")
 
+@app.route("/news", methods=["GET", "POST"])
+def news():
+
+    post_id = request.args.get("p")  
+
+    post = {
+        "id": post_id,
+        "title": "AI Changing the Future of Bangladesh",
+        "paragraph": "Artificial Intelligence is rapidly transforming industries in Bangladesh, from agriculture to fintech. Experts believe this shift will create new opportunities while also challenging traditional job sectors.",
+        "image": "https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png",
+        "author": "Parvej H. Talukder",
+        "date": "2 April 2026",
+        "category": "Tech",
+        "quote": "Technology will not replace humans, but humans who use technology will replace those who don’t."
+    }
+
+    return render_template("/post.html", post=post)
+
+@app.route("/page", methods=["GET", "POST"])
+def page():
+
+    page_id = request.args.get("id")  
+
+    page = {
+        "id": page_id,
+        "title": "AI Changing the Future of Bangladesh",
+        "paragraph": "Artificial Intelligence is rapidly transforming industries in Bangladesh, from agriculture to fintech. Experts believe this shift will create new opportunities while also challenging traditional job sectors.",
+        "image": "https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png",
+        "author": "Parvej H. Talukder",
+        "date": "2 April 2026",
+        "category": "Tech",
+        "quote": "Technology will not replace humans, but humans who use technology will replace those who don’t."
+    }
+
+    return render_template("/page.html", page=page)

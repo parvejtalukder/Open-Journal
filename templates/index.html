@@ -6,69 +6,206 @@
 
 {% block main %}
 
-<div class="flex flex-col lg:flex-row gap-5">
+<section class="mb-10">
+  <div id="indicators-carousel" class="relative w-full" data-carousel="slide">
+    <div class="relative h-56 md:h-96 overflow-hidden rounded-xl">
+      {% for post in posts %}
+      <div class="{% if loop.first %}block{% else %}hidden{% endif %} duration-700" data-carousel-item>
+        <img src="{{ post.image }}"
+             class="absolute w-full h-full object-cover top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div class="absolute bottom-5 text-2xl left-5 bg-black/60 text-white px-4 py-2 rounded">
+          {{ post.title }}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 h-full gap-4 w-full lg:w-5/7 py">
-        
-        <div class="w-auto rounded overflow-hidden h-full shadow-lg "> 
-            <img class="w-full" src="/img/card-top.jpg" alt="Sunset in the mountains"> 
-            <div class="px-6 py-4"> 
-                <div class="font-bold text-xl mb-2">The Coldest Sunset</div> 
-            </div> 
-            <div class="px-6 pt-4 pb-2"> 
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span> 
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span> 
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span> 
-            </div> 
+
+<section class="flex flex-col lg:flex-row gap-6 mb-12">
+
+  <div class="w-full lg:w-5/7 h-full">
+    <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Featured News</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="rounded border border-blue-600 shadow hover:bg-blue-200">
+        <img class="w-full" src="https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png">
+        <div class="p-4">
+          <h3 class="font-bold text-lg mb-2">Powerful new AI model launched for public</h3>
+          <div class="flex flex-wrap gap-2 text-sm">
+            <span class="bg-gray-200 px-2 py-1 rounded">Technology</span>
+            <span class="bg-gray-200 px-2 py-1 rounded">2 April 2026</span>
+            <span class="bg-gray-200 px-2 py-1 rounded">Parvej H.T</span>
+          </div>
         </div>
-        
-        
-        <div class="w-auto rounded overflow-hidden h-full shadow-lg "> 
-            <img class="w-full" src="/img/card-top.jpg" alt="Sunset in the mountains"> 
-            <div class="px-6 py-4"> 
-                <div class="font-bold text-xl mb-2">The Coldest Sunset</div> 
-            </div> 
-            <div class="px-6 pt-4 pb-2"> 
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span> 
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span> 
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span> 
-            </div> 
+      </div>
+
+      <div class="rounded border border-blue-600 shadow hover:bg-blue-200">
+        <img class="w-full" src="https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png">
+        <div class="p-4">
+          <h3 class="font-bold text-lg">Powerful new AI model launched</h3>
         </div>
-        
-        <div class="w-auto rounded overflow-hidden h-full shadow-lg "> 
-            <img class="w-full" src="/img/card-top.jpg" alt="Sunset in the mountains"> 
-            <div class="px-6 py-4"> 
-                <div class="font-bold text-xl mb-2">The Coldest Sunset</div> 
-            </div> 
-            <div class="px-6 pt-4 pb-2"> 
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span> 
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span> 
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span> 
-            </div> 
-        </div>
-        
-        <div class="w-auto rounded overflow-hidden h-full shadow-lg "> 
-            <img class="w-full" src="/img/card-top.jpg" alt="Sunset in the mountains"> 
-            <div class="px-6 py-4"> 
-                <div class="font-bold text-xl mb-2">The Coldest Sunset</div> 
-            </div> 
-            <div class="px-6 pt-4 pb-2"> 
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span> 
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span> 
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span> 
-            </div> 
+      </div>
+    </div>
+  </div>
+
+  <aside class="w-full lg:w-2/7 text-white h-auto rounded-xl px-4">
+      <div class="w-full h-full rounded-xl hover:bg-blue-200 shadow border-1 border-blue-600 p-4 bg-white flex flex-col justify-between">
+        <div>
+            <h3 class="text-lg text-blue-500 font-bold mb-2">Sponsored</h3>
+            <img src="/static/cs50.jpg" alt="CS50" class="w-full rounded mb-4">
+            <h4 class="font-bold text-gray-800 mb-2">
+              Learn Computer Science for Free
+            </h4>
+            <p class="text-sm text-gray-600">
+              Start Harvard’s CS50 and build real-world projects step by step.
+            </p>
         </div>
 
+        <a href="https://cs50.harvard.edu/x/" target="_blank" class="mt-4 block text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Enroll Now</a>
+    </div>
+  </aside>
+</section>
+
+
+<section class="mb-12">
+  <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">International News</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
+      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
+      <p class="text-sm">Biggest deals so far this year.</p>
+    </a>
+    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
+      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
+      <p class="text-sm">Biggest deals so far this year.</p>
+    </a>
+    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
+      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
+      <p class="text-sm">Biggest deals so far this year.</p>
+    </a>
+    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
+      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
+      <p class="text-sm">Biggest deals so far this year.</p>
+    </a>
+  </div>
+</section>
+<section class="mb-12">
+  <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">National News</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
+      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
+      <p class="text-sm">Biggest deals so far this year.</p>
+    </a>
+    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
+      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
+      <p class="text-sm">Biggest deals so far this year.</p>
+    </a>
+    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
+      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
+      <p class="text-sm">Biggest deals so far this year.</p>
+    </a>
+    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
+      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
+      <p class="text-sm">Biggest deals so far this year.</p>
+    </a>
+  </div>
+</section>
+
+
+<section class="mb-12">
+  <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Literature</h2>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="flex flex-col md:flex-row border border-blue-600 rounded p-4 hover:bg-blue-200">
+      <img class="w-full md:w-48 h-24 object-cover mb-3 md:mb-0"
+           src="https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png">
+      <div class="md:ml-4">
+        <h3 class="font-bold mb-2">Design process improvements</h3>
+        <p class="text-sm mb-2">Better collaboration tools emerging.</p>
+        <button class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</button>
+      </div>
     </div>
 
-    <aside class="w-full lg:w-2/7 bg-black rounded-xl text-white py-2">
-        <p>HI</p>
-    </aside>
+    <div class="flex flex-col md:flex-row border border-blue-600 rounded p-4 hover:bg-blue-200">
+      <img class="w-full md:w-48 h-24 object-cover mb-3 md:mb-0"
+           src="https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png">
+      <div class="md:ml-4">
+        <h3 class="font-bold mb-2">Design process improvements</h3>
+        <p class="text-sm mb-2">Better collaboration tools emerging.</p>
+        <button class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</button>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="mb-12">
+  <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Opinions</h2>
 
-</div>
-<div class="">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="flex flex-col md:flex-row border border-blue-600 rounded p-4 hover:bg-blue-200">
+      <img class="w-full md:w-48 h-24 object-cover mb-3 md:mb-0"
+           src="https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png">
+      <div class="md:ml-4">
+        <h3 class="font-bold mb-2">Design process improvements</h3>
+        <p class="text-sm mb-2">Better collaboration tools emerging.</p>
+        <button class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</button>
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row border border-blue-600 rounded p-4 hover:bg-blue-200">
+      <img class="w-full md:w-48 h-24 object-cover mb-3 md:mb-0"
+           src="https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png">
+      <div class="md:ml-4">
+        <h3 class="font-bold mb-2">Design process improvements</h3>
+        <p class="text-sm mb-2">Better collaboration tools emerging.</p>
+        <button class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-</div>
 
+<section>
+  <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Latest Posts</h2>
+  <div class="flex lg:flex-row flex-col lg:justify-around justify-start lg:items-center items-start">
+    <ol class="border-l border-blue-600 pl-4 space-y-6">
+        <li>
+          <p class="text-sm text-gray-500">February 2022</p>
+          <h3 class="font-semibold">Tailwind UI development</h3>
+          <p class="text-sm">Modern UI tools for developers.</p>
+        </li>
+        <li>
+          <p class="text-sm text-gray-500">March 2022</p>
+          <h3 class="font-semibold">Marketing design in Figma</h3>
+          <p class="text-sm">UI/UX improvements in workflow.</p>
+        </li>
+    </ol>
+    <ol class="border-l border-blue-600  pl-4 space-y-6">
+        <li>
+          <p class="text-sm text-gray-500">February 2022</p>
+          <h3 class="font-semibold">Tailwind UI development</h3>
+          <p class="text-sm">Modern UI tools for developers.</p>
+        </li>
+        <li>
+          <p class="text-sm text-gray-500">March 2022</p>
+          <h3 class="font-semibold">Marketing design in Figma</h3>
+          <p class="text-sm">UI/UX improvements in workflow.</p>
+        </li>
+    </ol>
+    <ol class="border-l border-blue-600  pl-4 space-y-6">
+        <li>
+          <p class="text-sm text-gray-500">February 2022</p>
+          <h3 class="font-semibold">Tailwind UI development</h3>
+          <p class="text-sm">Modern UI tools for developers.</p>
+        </li>
+        <li>
+          <p class="text-sm text-gray-500">March 2022</p>
+          <h3 class="font-semibold">Marketing design in Figma</h3>
+          <p class="text-sm">UI/UX improvements in workflow.</p>
+        </li>
+    </ol>
+  </div>
+</section>
 
 {% endblock %}

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ page.title }}
+{% endblock %}
+
+{% block main %}
+
+<article>
+
+    <div class="max-w-4xl -mt-4 mx-auto px-4 pt-10">
+    <div class="mb-8">
+      <img src="{{ page.image }}" alt="News Image" class="w-full rounded-2xl shadow-md object-cover max-h-[450px]">
+    </div>
+    <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight hover:text-blue-600">{{ page.title }}</h1>
+    <blockquote class="border-l-4 border-blue-500 pl-4 italic text-gray-600 my-6">
+        “{{ page.quote }}”
+    </blockquote>
+    <p class="mb-4 text-lg leading-relaxed">
+        {{ page.paragraph }}
+    </p>
+
+
+
+  </div>
+
+
+</article>
+
+{% endblock %}
