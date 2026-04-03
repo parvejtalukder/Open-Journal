@@ -1,106 +1,105 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    {{ post.title if post else "Post" }}
+    {{ post.title }}
 {% endblock %}
 
 {% block main %}
 
-{% if post %}
 <article>
+
 
 <nav class="flex" aria-label="Breadcrumb">
   <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
     <li class="inline-flex items-center">
       <a href="/" class="inline-flex items-center text-sm font-medium text-body hover:text-fg-brand">
-        <svg class="w-4 h-4 me-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <path stroke="currentColor" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"/>
-        </svg>
+        <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"/></svg>
         Home
       </a>
     </li>
     <li>
       <div class="flex items-center space-x-1.5">
-        <svg class="w-3.5 h-3.5 text-body" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <path stroke="currentColor" stroke-width="2" d="m9 5 7 7-7 7"/>
-        </svg>
-        <a href="/category/{{ post.category }}" class="text-sm font-medium text-body hover:text-fg-brand">
-          {{ post.category }}
-        </a>
+        <svg class="w-3.5 h-3.5 rtl:rotate-180 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/></svg>
+        <a href="/category/{{ post.category }}" class="inline-flex items-center text-sm font-medium text-body hover:text-fg-brand">{{ post.category }}</a>
       </div>
     </li>
-    <li>
+    <li aria-current="page">
       <div class="flex items-center space-x-1.5">
-        <svg class="w-3.5 h-3.5 text-body" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <path stroke="currentColor" stroke-width="2" d="m9 5 7 7-7 7"/>
-        </svg>
-        <span class="text-sm font-medium text-body-subtle">
-          {{ post.title }}
-        </span>
+        <svg class="w-3.5 h-3.5 rtl:rotate-180 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/></svg>
+        <span class="inline-flex items-center text-sm font-medium text-body-subtle text-wrap">{{ post.title }}</span>
       </div>
     </li>
   </ol>
 </nav>
 
-<div class="max-w-4xl mx-auto px-4 pt-10">
-  <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight hover:text-blue-600">
-    {{ post.title }}
-  </h1>
+    <div class="max-w-4xl -mt-4 mx-auto px-4 pt-10">
+    <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight hover:text-blue-600">{{ post.title }}</h1>
+    <div class="flex items-center text-sm text-gray-500 mb-6">
+      <span>By {{ post.author_name }}</span>
+      <span class="mx-2">•</span>
+      <span>Published at {{ post.created_at }}</span>
+    </div>
 
-  <div class="flex items-center text-sm text-gray-500 mb-6">
-    <span>By {{ post.author_name }}</span>
-    <span class="mx-2">•</span>
-    <span>Published {{ post.created_at }}</span>
+    <div class="mb-8">
+      <img src="/static/uploads/{{ post.image }}" alt="News Image" class="w-full rounded-2xl shadow-md object-cover max-h-[450px]">
+    </div>
+
+    <!-- <blockquote class="border-l-4 border-blue-500 pl-4 italic text-gray-600 my-6">
+        “{{ post.quote }}”
+      </blockquote> -->
+
+    <div class="prose prose-lg max-w-none">
+      <p class="mb-4 text-lg leading-relaxed text-justify">
+        {{ post.content }}
+      </p>
+    </div>
+
   </div>
-
-  <div class="mb-8">
-    <img src="{{ url_for('static', filename='uploads/' ~ post.image) }}"
-         class="w-full rounded-2xl shadow-md object-cover max-h-[450px]">
+  <div class="flex justify-around items-center py-4">
+    <button class="btn bg-blue-600 hover:bg-blue-300 py-2 px-3 rounded-lg" >Prev</button>
+    <button class="btn bg-blue-600 hover:bg-blue-300 py-2 px-3 rounded-lg" >Next</button>
   </div>
-
-  <div class="prose prose-lg max-w-none">
-    <p class="mb-4 text-lg leading-relaxed">
-      {{ post.content }}
-    </p>
-  </div>
-</div>
-
-<div class="flex justify-between items-center py-6 max-w-4xl mx-auto px-4">
-  {% if prev_post %}
-  <a href="{{ url_for('news', post_id=prev_post.id) }}"
-     class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">
-    ← Prev
-  </a>
-  {% else %}
-  <div></div>
-  {% endif %}
-
-  {% if next_post %}
-  <a href="{{ url_for('news', post_id=next_post.id) }}"
-     class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">
-    Next →
-  </a>
-  {% endif %}
-</div>
-
-<section class="max-w-4xl mx-auto px-4 pb-10">
+  <section>
   <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Latest Posts</h2>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    {% for p in latest_posts %}
-    <a href="{{ url_for('news', post_id=p.id) }}"
-       class="block border border-blue-600 rounded-xl p-4 hover:bg-blue-100 transition">
-        <p class="text-sm text-gray-500">{{ p.created_at }}</p>
-        <h3 class="font-semibold text-lg">{{ p.title }}</h3>
-        <p class="text-sm text-gray-600 truncate">{{ p.content }}</p>
-    </a>
-    {% endfor %}
+  <div class="flex lg:flex-row flex-col lg:justify-around justify-start lg:items-center items-start">
+    <ol class="border-l border-blue-600 pl-4 space-y-6">
+        <li>
+          <p class="text-sm text-gray-500">February 2022</p>
+          <h3 class="font-semibold">Tailwind UI development</h3>
+          <p class="text-sm">Modern UI tools for developers.</p>
+        </li>
+        <li>
+          <p class="text-sm text-gray-500">March 2022</p>
+          <h3 class="font-semibold">Marketing design in Figma</h3>
+          <p class="text-sm">UI/UX improvements in workflow.</p>
+        </li>
+    </ol>
+    <ol class="border-l border-blue-600  pl-4 space-y-6">
+        <li>
+          <p class="text-sm text-gray-500">February 2022</p>
+          <h3 class="font-semibold">Tailwind UI development</h3>
+          <p class="text-sm">Modern UI tools for developers.</p>
+        </li>
+        <li>
+          <p class="text-sm text-gray-500">March 2022</p>
+          <h3 class="font-semibold">Marketing design in Figma</h3>
+          <p class="text-sm">UI/UX improvements in workflow.</p>
+        </li>
+    </ol>
+    <ol class="border-l border-blue-600  pl-4 space-y-6">
+        <li>
+          <p class="text-sm text-gray-500">February 2022</p>
+          <h3 class="font-semibold">Tailwind UI development</h3>
+          <p class="text-sm">Modern UI tools for developers.</p>
+        </li>
+        <li>
+          <p class="text-sm text-gray-500">March 2022</p>
+          <h3 class="font-semibold">Marketing design in Figma</h3>
+          <p class="text-sm">UI/UX improvements in workflow.</p>
+        </li>
+    </ol>
   </div>
 </section>
-
 </article>
-{% else %}
-<p class="text-center text-gray-500 mt-10">Post not found.</p>
-{% endif %}
 
 {% endblock %}

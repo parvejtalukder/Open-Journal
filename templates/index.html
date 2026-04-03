@@ -10,13 +10,13 @@
   <div id="indicators-carousel" class="relative w-full" data-carousel="slide">
     <div class="relative h-56 md:h-96 overflow-hidden rounded-xl">
       {% for post in posts %}
-      <div class="{% if loop.first %}block{% else %}hidden{% endif %} duration-700" data-carousel-item>
-        <img src="{{ post.image }}"
+      <a href="/news?p={{ post.id }}" class="{% if loop.first %}block{% else %}hidden{% endif %} duration-700" data-carousel-item>
+        <img src="/static/uploads/{{ post.image }}"
              class="absolute w-full h-full object-cover top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div class="absolute bottom-5 text-2xl left-5 bg-black/60 text-white px-4 py-2 rounded">
           {{ post.title }}
         </div>
-      </div>
+      </a>
       {% endfor %}
     </div>
   </div>
@@ -27,26 +27,20 @@
 
   <div class="w-full lg:w-5/7 h-full">
     <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Featured News</h2>
-
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {% for news in newses %}
       <div class="rounded border border-blue-600 shadow hover:bg-blue-200">
-        <img class="w-full" src="https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png">
+        <img class="w-full h-48 object-cover" src="/static/uploads/{{ news.image }}">
         <div class="p-4">
-          <h3 class="font-bold text-lg mb-2">Powerful new AI model launched for public</h3>
+          <h3 class="font-bold text-lg mb-2">{{ news.title }}</h3>
           <div class="flex flex-wrap gap-2 text-sm">
-            <span class="bg-gray-200 px-2 py-1 rounded">Technology</span>
-            <span class="bg-gray-200 px-2 py-1 rounded">2 April 2026</span>
-            <span class="bg-gray-200 px-2 py-1 rounded">Parvej H.T</span>
+            <span class="bg-gray-200 px-2 py-1 rounded">{{ news.category }}</span>
+            <span class="bg-gray-200 px-2 py-1 rounded"> {{ news.created_at }} </span>
+            <span class="bg-gray-200 px-2 py-1 rounded"> By @{{ news.author_name }} </span>
           </div>
         </div>
       </div>
-
-      <div class="rounded border border-blue-600 shadow hover:bg-blue-200">
-        <img class="w-full" src="https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png">
-        <div class="p-4">
-          <h3 class="font-bold text-lg">Powerful new AI model launched</h3>
-        </div>
-      </div>
+      {% endfor %}
     </div>
   </div>
 
@@ -73,22 +67,12 @@
   <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Entertainment</h2>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
-      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
-      <p class="text-sm">Biggest deals so far this year.</p>
+    {% for entertainment in entertainments %}
+    <a href="/news?p={{ entertainment.id }}" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
+      <h3 class="font-semibold mb-2">{{ entertainment.title }}</h3>
+      <p class="text-sm">{{ entertainment.content | truncate(30, True, '...') }}</p>
     </a>
-    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
-      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
-      <p class="text-sm">Biggest deals so far this year.</p>
-    </a>
-    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
-      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
-      <p class="text-sm">Biggest deals so far this year.</p>
-    </a>
-    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
-      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
-      <p class="text-sm">Biggest deals so far this year.</p>
-    </a>
+    {% endfor %}
   </div>
 </section>
 <section class="mb-12">

@@ -50,12 +50,40 @@ def role_required(*roles):
 
 @app.route("/")
 def index():
-    posts = [
-        {"title": "AI Model Released", "image": "https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png"},
-        {"title": "Global Event", "image": "https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png"},
-        {"title": "Sports Win", "image": "https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png"},
-    ]
-    return render_template("index.html", posts=posts)
+
+    posts = db.execute(
+        """
+            SELECT posts.*, users.name AS author_name
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+            ORDER BY posts.created_at DESC
+            LIMIT ?
+        """, (4,))
+    
+    news = db.execute(
+        """
+            SELECT posts.*, users.username AS author_name
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+            WHERE posts.category = "news"
+            ORDER BY posts.created_at DESC
+            LIMIT ?
+        """, (2,)
+        )
+    
+    entertainment = db.execute(
+        """
+            SELECT posts.*, users.username AS author_name
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+            WHERE posts.category = "entertainment"
+            ORDER BY posts.created_at DESC
+            LIMIT ?
+        """, (4,)
+        )
+    
+
+    return render_template("index.html", posts=posts, newses=news, entertainments=entertainment)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -180,6 +208,39 @@ def dashboard():
 
     return render_template("dashboard.html", user=get_current_user())
 
+@app.route("/dashboard/be-author", methods=["GET", "POST"])
+@login_required
+@role_required("reader")
+def be_author():
+
+    if request.method == "POST":
+
+        user_id = session["user_id"]
+        message = request.form.get("message")
+        status = "pending"
+
+        db.execute(
+            """
+            INSERT INTO applications (user_id, message, status)
+            VALUES (?, ?, ?)
+            """,
+            user_id, message, status
+        )
+
+        flash("Application Sent!")
+        return redirect("/dashboard")
+
+    else:
+
+        result = db.execute(
+            "SELECT status FROM applications WHERE user_id = ?",
+            (session["user_id"])
+        )
+
+        status = result[0]["status"] if result else None
+
+        return render_template("dashboard/reader/applicationauthor.html", user=get_current_user(), status=status)
+
 @app.route("/dashboard/overview", methods=["GET", "POST"])
 @login_required
 @role_required("admin",)
@@ -203,7 +264,13 @@ def overview_admin():
         "SELECT * FROM users WHERE role = ?", "reader")
     reader_len= len(reader_list)
 
-    return render_template("dashboard/admin/overview.html", user=curr_user, user_count=user_len, admin_count=admin_len, author_cout=author_len, reader_count=reader_len)
+    result = db.execute("SELECT COUNT(*) AS total FROM posts")
+    posts_count = result[0]["total"]
+
+    appli_count = db.execute("SELECT COUNT(*) AS total FROM applications")[0]["total"]
+    feedback_count = db.execute("SELECT COUNT (*) AS total FROM feedback")[0]["total"]
+
+    return render_template("dashboard/admin/overview.html", user=curr_user, user_count=user_len, admin_count=admin_len, author_cout=author_len, reader_count=reader_len, posts_count=posts_count, appli_count=appli_count, feedback_count=feedback_count)
 
 @app.route("/dashboard/posts", methods=["GET", "POST"])
 @login_required
@@ -272,6 +339,7 @@ def overview_posts_create():
         )
         flash("Post created successfully!")
         return redirect("/dashboard/posts")
+    
     else:
         return render_template("dashboard/posts/create.html", user=get_current_user())
 
@@ -287,18 +355,7 @@ def news():
             FROM posts
             JOIN users ON posts.user_id = users.id
             WHERE posts.id = ?
-        """, (post_id,))
-
-    # post = {
-    #     "id": post_id,
-    #     "title": "AI Changing the Future of Bangladesh",
-    #     "paragraph": "Artificial Intelligence is rapidly transforming industries in Bangladesh, from agriculture to fintech. Experts believe this shift will create new opportunities while also challenging traditional job sectors.",
-    #     "image": "https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png",
-    #     "author": "Parvej H. Talukder",
-    #     "date": "2 April 2026",
-    #     "category": "Tech",
-    #     "quote": "Technology will not replace humans, but humans who use technology will replace those who don’t."
-    # }
+        """, (post_id))
 
     return render_template("/post.html", post = post[0] if post else None)
 
@@ -306,8 +363,6 @@ def news():
 def page():
 
     page_id = request.args.get("id")  
-
-
     page = {
         "id": page_id,
         "title": "AI Changing the Future of Bangladesh",
