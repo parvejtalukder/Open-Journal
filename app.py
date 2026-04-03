@@ -170,46 +170,143 @@ def dashboard():
 
     curr_user = get_current_user();
     if curr_user["role"] == "admin":
-        return render_template("dashboard/admin.html", user=curr_user)
+        return render_template("dashboard/admin.html", user=curr_user, show_cards=True)
     
     if curr_user["role"] == "author":
-        return render_template("dashboard/author.html", user=curr_user)
+        return render_template("dashboard/author.html", user=curr_user, show_cards=True)
     
     if curr_user["role"] == "reader":
-        return render_template("dashboard/reader.html", user=curr_user)
+        return render_template("dashboard/reader.html", user=curr_user, show_cards=True)
 
     return render_template("dashboard.html", user=get_current_user())
 
-# @app.route("/dashboard/profie", methods=["GET", "POST"])
-# @login_required
-# def dashboard():
-#     curr_user = get_current_user();
-#     return render_template("dashboard/profile.html", user=curr_user)
+@app.route("/dashboard/overview", methods=["GET", "POST"])
+@login_required
+@role_required("admin",)
+def overview_admin():
+    curr_user = get_current_user();
+    # url_path = request.base_url();
 
+    user_list = db.execute(
+        "SELECT * FROM users;")
+    user_len = len(user_list)
+
+    admin_list = db.execute(
+        "SELECT * FROM users WHERE role = ?", "admin")
+    admin_len= len(admin_list)
+
+    author_list = db.execute(
+        "SELECT * FROM users WHERE role = ?", "author")
+    author_len= len(author_list)
+
+    reader_list = db.execute(
+        "SELECT * FROM users WHERE role = ?", "reader")
+    reader_len= len(reader_list)
+
+    return render_template("dashboard/admin/overview.html", user=curr_user, user_count=user_len, admin_count=admin_len, author_cout=author_len, reader_count=reader_len)
+
+@app.route("/dashboard/posts", methods=["GET", "POST"])
+@login_required
+@role_required("admin", "author")
+def overview_posts():
+
+    page = request.args.get("page", 1, type=int)
+    per_page = 5
+    offset = (page - 1) * per_page
+
+    posts = db.execute("""
+        SELECT posts.*, users.name AS author_name
+        FROM posts
+        JOIN users ON posts.user_id = users.id
+        ORDER BY posts.created_at DESC
+        LIMIT ? OFFSET ?
+    """, per_page, offset)
+
+    total = db.execute("SELECT COUNT(*) as count FROM posts")[0]["count"]
+    next = total > page * per_page
+    prev = page > 1
+    post_count = len(posts);
+
+    return render_template("dashboard/posts/posts.html", user=get_current_user(), next=next, prev=prev, posts=posts, page=page, posts_count=post_count)
+
+@app.route("/dashboard/posts/create", methods=["GET", "POST"])
+@login_required
+@role_required("admin", "author")
+def overview_posts_create():
+
+    if request.method == "POST":
+
+        title = request.form.get("title")
+        category = request.form.get("category")
+        status = "draft"
+        image = request.files.get("image")
+        author = session["user_id"]
+        content = request.form.get("content")
+
+        if not title:
+            return error("Must have a title!")
+        
+        if not category:
+            return error("Must have a category!")
+        
+        if not content:
+            return error("Must have content!")
+        # if not status:
+            # return error("Only PNG, JPG, JPEG, WEBP allowed!")
+
+        original_name = secure_filename(image.filename)
+        if not allowed_file(original_name):
+            return error("Upload a file or valid file!")
     
+        extension = original_name.rsplit(".", 1)[1].lower()
+        filename = f"{uuid.uuid4()}.{extension}"
+        file_location = os.path.join(UPLOAD_FOLDER, filename)
+        image.save(file_location)
+
+        db.execute(
+            """
+            INSERT INTO posts (user_id, title, content, image, category)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+        author, title, content, filename, category
+        )
+        flash("Post created successfully!")
+        return redirect("/dashboard/posts")
+    else:
+        return render_template("dashboard/posts/create.html", user=get_current_user())
+
 
 @app.route("/news", methods=["GET", "POST"])
 def news():
 
     post_id = request.args.get("p")  
 
-    post = {
-        "id": post_id,
-        "title": "AI Changing the Future of Bangladesh",
-        "paragraph": "Artificial Intelligence is rapidly transforming industries in Bangladesh, from agriculture to fintech. Experts believe this shift will create new opportunities while also challenging traditional job sectors.",
-        "image": "https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png",
-        "author": "Parvej H. Talukder",
-        "date": "2 April 2026",
-        "category": "Tech",
-        "quote": "Technology will not replace humans, but humans who use technology will replace those who don’t."
-    }
+    post = db.execute(
+        """
+            SELECT posts.*, users.name AS author_name
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+            WHERE posts.id = ?
+        """, (post_id,))
 
-    return render_template("/post.html", post=post)
+    # post = {
+    #     "id": post_id,
+    #     "title": "AI Changing the Future of Bangladesh",
+    #     "paragraph": "Artificial Intelligence is rapidly transforming industries in Bangladesh, from agriculture to fintech. Experts believe this shift will create new opportunities while also challenging traditional job sectors.",
+    #     "image": "https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png",
+    #     "author": "Parvej H. Talukder",
+    #     "date": "2 April 2026",
+    #     "category": "Tech",
+    #     "quote": "Technology will not replace humans, but humans who use technology will replace those who don’t."
+    # }
+
+    return render_template("/post.html", post = post[0] if post else None)
 
 @app.route("/page", methods=["GET", "POST"])
 def page():
 
     page_id = request.args.get("id")  
+
 
     page = {
         "id": page_id,

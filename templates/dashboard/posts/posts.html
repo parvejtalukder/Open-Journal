@@ -1,0 +1,84 @@
+{% extends "dashboard.html" %}
+
+{% block title %}
+    Posts 
+{% endblock %}
+
+{% block main %}
+<div class="w-full h-full space-y-4"> 
+    <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-semibold">
+            All Posts ({{ posts_count }})
+        </h2>
+        <a href="/dashboard/posts/create"
+           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            + Create Post
+        </a>
+    </div>
+    <div class="overflow-x-auto bg-white shadow rounded-xl border border-gray-200">
+        <table class="w-full text-sm text-left">
+            <thead class="bg-gray-100 border-b">
+                <tr>
+                    <th class="px-6 py-3 font-semibold">Title</th>
+                    <th class="px-6 py-3 font-semibold">Author</th>
+                    <th class="px-6 py-3 font-semibold">Category</th>
+                    <th class="px-6 py-3 font-semibold">Date</th>
+                    <th class="px-6 py-3 font-semibold text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if posts %}
+                    {% for post in posts %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-6 py-4 font-medium text-gray-800">
+                            {{ post.title }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-600">
+                            {{ post.author_name }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-600">
+                            {{ post.category or "—" }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-500">
+                            {{ post.created_at[:10] }}
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <a href="/dashboard/posts/edit/{{ post.id }}"
+                               class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
+                                Edit
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-6 text-gray-500">
+                            No posts found.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class="flex justify-between items-center">
+        {% if has_prev %}
+        <a href="{{ url_for('posts', page=page-1) }}"
+           class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
+            Prev
+        </a>
+        {% else %}
+        <div></div>
+        {% endif %}
+        <span class="text-sm text-gray-500">
+            Page {{ page }}
+        </span>
+        {% if has_next %}
+        <a href="{{ url_for('posts', page=page+1) }}"
+           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Next
+        </a>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

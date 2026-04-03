@@ -67,7 +67,7 @@
     </ul>
 
         {% if get_flashed_messages() %} 
-        <header id="flash-message" class="fixed mx-auto top-20 left-2/2 right-1/2 w-full bg-slate-700 rounded-md p-5 z-50 shadow-lg transform transition-all duration-1000"> 
+        <header id="flash-message" class="fixed mx-auto top-20 left-3/2 right-1/2 w-full bg-slate-700 rounded-md p-5 z-50 shadow-lg transform transition-all duration-1000"> 
             <!-- <div class="bg-blue-100 text-blue-800 px-4 py-3 rounded text-center shadow"> {{ get_flashed_messages() | join(" ") }} </div>  -->
             <div id="toast-top-left" class="fixed flex items-center w-full max-w-xs p-4 text-body bg-blue-300 border-blue-600 rounded-xl shadow-xs border border-default top-5 start-5" role="alert">
                 <div class="text-sm font-normal">{{ get_flashed_messages() | join(" ") }}</div>
