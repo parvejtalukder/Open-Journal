@@ -28,7 +28,7 @@
                     <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">Opinion</a></li>
                 </ul>
             </div>
-             <div class="space-x-4 flex justify-center items-center "> 
+             <div class="lg:space-x-4 space-x-1 flex justify-center items-center "> 
                 {% if session["user_id"] %} 
                     <!-- <a href="/logout" class="hover:underline">Log Out</a>  -->
                     <a href="/dashboard" class="hover:underline"><svg
@@ -46,7 +46,10 @@
                     <a href="/login" class="hover:underline btn">Log In</a> 
                     <!-- <a href="/register" class="hidden lg:block hover:underline">Register</a>  -->
                 {% endif %} 
-                <img src="/static/manu.png" id="menuBtn" class="p-3 block lg:hidden w-14 h-auto">
+                <!-- <img src="/static/manu.png" id="menuBtn" class="p-3 block lg:hidden w-14 h-auto"> -->
+                <svg id="menuBtn" class="p-3 block lg:hidden w-14 h-auto text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5"/>
+                </svg>
             </div> 
         </div> 
     </nav>

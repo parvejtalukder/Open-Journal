@@ -171,6 +171,12 @@ def dashboard():
     curr_user = get_current_user();
     if curr_user["role"] == "admin":
         return render_template("dashboard/admin.html", user=curr_user)
+    
+    if curr_user["role"] == "author":
+        return render_template("dashboard/author.html", user=curr_user)
+    
+    if curr_user["role"] == "reader":
+        return render_template("dashboard/reader.html", user=curr_user)
 
     return render_template("dashboard.html", user=get_current_user())
 
