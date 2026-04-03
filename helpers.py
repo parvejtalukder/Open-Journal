@@ -4,6 +4,7 @@ from flask import redirect, render_template, session
 from functools import wraps
 
 
+
 def error(message, code=400):
 
     def escape(s):

@@ -6,6 +6,7 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import error, login_required
 from werkzeug.utils import secure_filename
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -29,6 +30,24 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+def get_current_user():
+    user_id = session.get("user_id")
+    if not user_id:
+        return None
+    rows = db.execute("SELECT * FROM users WHERE id = ?", user_id)
+    return rows[0] if rows else None
+
+def role_required(*roles):
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            user = get_current_user()
+            if user["role"] not in roles:
+                return redirect("/dashboard")  
+            return f(*args, **kwargs)
+        return wrapper
+    return decorator
+
 @app.route("/")
 def index():
     posts = [
@@ -46,10 +65,10 @@ def login():
     if request.method == "POST":
 
         if not request.form.get("username"):
-            return error("must provide username", 403)
+            return error("Must provide username!", 403)
 
         elif not request.form.get("password"):
-            return error("must provide password", 403)
+            return error("Must provide password!", 403)
 
         rows = db.execute(
             "SELECT * FROM users WHERE username = ?", request.form.get("username")
@@ -58,7 +77,7 @@ def login():
         if len(rows) != 1 or not check_password_hash(
             rows[0]["hash"], request.form.get("password")
         ):
-            return error("invalid username and/or password", 403)
+            return error("Invalid username or password!", 403)
 
         session["user_id"] = rows[0]["id"]
 
@@ -107,7 +126,7 @@ def register():
         
         original_name = secure_filename(photo.filename)
         if not allowed_file(original_name):
-            return error("Only PNG, JPG, JPEG, WEBP allowed")
+            return error("Only PNG, JPG, JPEG, WEBP allowed!")
     
         extension = original_name.rsplit(".", 1)[1].lower()
         filename = f"{uuid.uuid4()}.{extension}"
@@ -115,6 +134,15 @@ def register():
         photo.save(file_location)
         
         hash = generate_password_hash(password)
+
+        existing_user = db.execute("SELECT * FROM users WHERE username = ?", username)
+        if len(existing_user) != 0:
+            return error("Username already taken!")
+        
+        existing_email = db.execute("SELECT * FROM users WHERE email = ?", email)
+        if len(existing_email) != 0:
+            return error("Email already registered!")
+
 
         try:
             db.execute("""
@@ -130,10 +158,29 @@ def register():
             return redirect("/")
 
         except: 
-            return error("username already exists")
+            return error("Username already exists")
 
     else: 
         return render_template("register.html")
+    
+
+@app.route("/dashboard", methods=["GET", "POST"])
+@login_required
+def dashboard():
+
+    curr_user = get_current_user();
+    if curr_user["role"] == "admin":
+        return render_template("dashboard/admin.html", user=curr_user)
+
+    return render_template("dashboard.html", user=get_current_user())
+
+# @app.route("/dashboard/profie", methods=["GET", "POST"])
+# @login_required
+# def dashboard():
+#     curr_user = get_current_user();
+#     return render_template("dashboard/profile.html", user=curr_user)
+
+    
 
 @app.route("/news", methods=["GET", "POST"])
 def news():
@@ -170,5 +217,9 @@ def page():
     }
 
     return render_template("/page.html", page=page)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return error("Page not found!")
 
 app.config["DEBUG"] = True

@@ -28,13 +28,23 @@
                     <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/">Opinion</a></li>
                 </ul>
             </div>
-             <div class="space-x-4 flex justify-center items-center"> 
+             <div class="space-x-4 flex justify-center items-center "> 
                 {% if session["user_id"] %} 
-                    <a href="/logout" class="hover:underline">Log Out</a> 
-                    <a href="/dashboard" class="hover:underline">Dashboard</a> 
+                    <!-- <a href="/logout" class="hover:underline">Log Out</a>  -->
+                    <a href="/dashboard" class="hover:underline"><svg
+              class="w-6 h-6 text-white"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+              ></path>
+            </svg></a> 
                 {% else %} 
-                    <a href="/login" class="hover:underline">Log In</a> 
-                    <a href="/register" class="hidden lg:block hover:underline">Register</a> 
+
+                    <a href="/login" class="hover:underline btn">Log In</a> 
+                    <!-- <a href="/register" class="hidden lg:block hover:underline">Register</a>  -->
                 {% endif %} 
                 <img src="/static/manu.png" id="menuBtn" class="p-3 block lg:hidden w-14 h-auto">
             </div> 
@@ -54,8 +64,11 @@
     </ul>
 
         {% if get_flashed_messages() %} 
-        <header class="max-w-3xl mx-auto mt-4"> 
-            <div class="bg-blue-100 text-blue-800 px-4 py-3 rounded text-center shadow"> {{ get_flashed_messages() | join(" ") }} </div> 
+        <header id="flash-message" class="fixed mx-auto top-20 left-2/2 right-1/2 w-full bg-slate-700 rounded-md p-5 z-50 shadow-lg transform transition-all duration-1000"> 
+            <!-- <div class="bg-blue-100 text-blue-800 px-4 py-3 rounded text-center shadow"> {{ get_flashed_messages() | join(" ") }} </div>  -->
+            <div id="toast-top-left" class="fixed flex items-center w-full max-w-xs p-4 text-body bg-blue-300 border-blue-600 rounded-xl shadow-xs border border-default top-5 start-5" role="alert">
+                <div class="text-sm font-normal">{{ get_flashed_messages() | join(" ") }}</div>
+            </div>
         </header> 
         {% endif %}
 

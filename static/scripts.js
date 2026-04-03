@@ -25,3 +25,11 @@ const headlines = [
 const ticker = document.getElementById("updates");
 ticker.innerHTML = headlines.map(h => `    🔴 ${h}    `).join(" ");
 
+setTimeout(() => {
+    const flash = document.getElementById("flash-message");
+    if (flash) {
+      flash.style.transition = "opacity 0.5s ease";
+      flash.style.opacity = "0";
+      setTimeout(() => flash.remove(), 500); 
+    }
+  }, 3000);
