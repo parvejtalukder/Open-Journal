@@ -298,24 +298,44 @@ def overview_admin():
     user_len = len(user_list)
 
     admin_list = db.execute(
-        "SELECT * FROM users WHERE role = ?", "admin")
+        "SELECT * FROM users WHERE users.role = ?", "admin")
     admin_len= len(admin_list)
 
     author_list = db.execute(
-        "SELECT * FROM users WHERE role = ?", "author")
+        "SELECT * FROM users WHERE users.role = ?", "author")
     author_len= len(author_list)
 
     reader_list = db.execute(
-        "SELECT * FROM users WHERE role = ?", "reader")
+        "SELECT * FROM users WHERE users.role = ?", "reader")
     reader_len= len(reader_list)
 
     result = db.execute("SELECT COUNT(*) AS total FROM posts")
     posts_count = result[0]["total"]
 
+    fb_page = request.args.get("fb_page", 1, type=int)
+    fb_per_page = 3
+    fb_offset = (fb_page - 1) * fb_per_page
+
+    feedbacks = db.execute(
+        """
+            SELECT feedback.*, users.username
+            FROM feedback
+            JOIN users ON feedback.user_id = users.id
+            ORDER BY feedback.created_at DESC
+            LIMIT ? OFFSET ?
+        """, fb_per_page, fb_offset)
+    
+    fb_total = db.execute(
+    "SELECT COUNT(*) as count FROM feedback"
+    )[0]["count"]
+
+    fb_next = fb_total > fb_page * fb_per_page
+    fb_prev = fb_page > 1
+
     appli_count = db.execute("SELECT COUNT(*) AS total FROM applications")[0]["total"]
     feedback_count = db.execute("SELECT COUNT (*) AS total FROM feedback")[0]["total"]
 
-    return render_template("dashboard/admin/overview.html", user=curr_user, user_count=user_len, admin_count=admin_len, author_cout=author_len, reader_count=reader_len, posts_count=posts_count, appli_count=appli_count, feedback_count=feedback_count)
+    return render_template("dashboard/admin/overview.html", user=curr_user, user_count=user_len, admin_count=admin_len, author_count=author_len, reader_count=reader_len, posts_count=posts_count, appli_count=appli_count, feedback_count=feedback_count,feedbacks=feedbacks, fb_next=fb_next, fb_prev=fb_prev, fb_page=fb_page,)
 
 @app.route("/dashboard/posts", methods=["GET", "POST"])
 @login_required
@@ -514,7 +534,67 @@ def feedback():
 
     return render_template("dashboard/sendfeedback.html", user=get_current_user())
 
+@app.route("/dashboard/profile")
+@login_required
+def profile():
+    return render_template("dashboard/profile.html", user=get_current_user())
 
+@app.route("/dashboard/users")
+@login_required
+@role_required("admin")
+def users_overview():
+
+    page = request.args.get("page", 1, type=int)
+    per_page = 2
+    offset = (page - 1) * per_page
+
+    users = db.execute("""
+        SELECT * FROM users
+        ORDER BY created_at DESC
+        LIMIT ? OFFSET ?
+    """, per_page, offset)
+
+    total = db.execute("SELECT COUNT(*) AS count FROM users")[0]["count"]
+
+    next = offset + per_page < total
+    prev = page > 1
+
+    return render_template( "dashboard/admin/users.html", user=get_current_user(), users=users, users_count=total, page=page, next=next, prev=prev
+    )
+
+
+@app.route("/author/<int:user_id>")
+def public_author(user_id):
+
+    page = request.args.get("page", 1, type=int)
+    per_page = 3
+    offset = (page - 1) * per_page
+
+    author = db.execute(
+        "SELECT * FROM users WHERE id = ?",
+        user_id
+    )
+
+    if not author:
+        return error("Author not found!")
+
+    posts = db.execute("""
+        SELECT * FROM posts
+        WHERE user_id = ?
+        ORDER BY created_at DESC
+        LIMIT ? OFFSET ?
+    """, user_id, per_page, offset)
+
+    total = db.execute(
+        "SELECT COUNT(*) as count FROM posts WHERE user_id = ?",
+        user_id
+    )[0]["count"]
+
+    next = total > page * per_page
+    prev = page > 1
+
+    return render_template( "profile.html", author=author[0], posts=posts, page=page, next=next, prev=prev
+    )
 
 @app.errorhandler(404)
 def page_not_found(e):

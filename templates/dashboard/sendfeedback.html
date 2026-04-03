@@ -1,33 +1,93 @@
 {% extends "dashboard.html" %}
 
 {% block title %}
-    Send Feedback
+    Feedback
 {% endblock %}
 
 {% block main %}
-<div class="w-full flex justify-center items-center lg:pt-15">
-    <div class="w-full lg:w-1/2 bg-white border border-blue-200 rounded-2xl shadow p-6">
+<div class="w-full flex flex-col gap-6">
+
+    <!-- Send Feedback Form -->
+    <div class="w-full lg:w-1/2 mx-auto bg-white border border-blue-200 rounded-2xl shadow p-6">
         <h2 class="text-xl font-semibold text-blue-600 mb-4">
             Send Feedback
         </h2>
+
         <form action="/dashboard/feedback" method="post" class="flex flex-col gap-4">
+
+            <!-- Subject -->
             <div>
-                <label class="text-sm text-blue-600">Subject</label>
+                <label class="text-sm text-blue-600">Subject (optional)</label>
                 <input name="subject" type="text"
                     class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Optional subject">
+                    placeholder="Enter subject">
             </div>
+
+            <!-- Message -->
             <div>
                 <label class="text-sm text-blue-600">Message</label>
                 <textarea name="message" required rows="5"
                     class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Write your feedback here..."></textarea>
             </div>
+
+            <!-- Button -->
             <button type="submit"
                 class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition font-medium">
                 Send Feedback
             </button>
+
         </form>
     </div>
+
+    <!-- Admin View (auto appears if feedbacks exist) -->
+    {% if feedbacks %}
+    <div class="w-full bg-white border border-gray-200 rounded-2xl shadow p-6">
+
+        <h3 class="text-lg font-semibold text-blue-600 mb-4">
+            All Feedback ({{ feedback_count }})
+        </h3>
+
+        <div class="space-y-4">
+            {% for fb in feedbacks %}
+            <div class="p-4 border rounded-xl bg-gray-50">
+
+                <div class="flex justify-between items-center">
+                    <span class="text-sm font-semibold text-gray-800">
+                        {{ fb.username }}
+                    </span>
+
+                    <span class="text-xs text-gray-400">
+                        {{ fb.created_at[:16] }}
+                    </span>
+                </div>
+
+                {% if fb.subject %}
+                <p class="text-sm text-blue-600 mt-1">
+                    {{ fb.subject }}
+                </p>
+                {% endif %}
+
+                <p class="text-sm text-gray-700 mt-2">
+                    {{ fb.message }}
+                </p>
+
+                <span class="inline-block mt-2 px-2 py-1 text-xs rounded
+                    {% if fb.status == 'unread' %}
+                        bg-red-100 text-red-600
+                    {% else %}
+                        bg-green-100 text-green-600
+                    {% endif %}
+                ">
+                    {{ fb.status }}
+                </span>
+
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}
