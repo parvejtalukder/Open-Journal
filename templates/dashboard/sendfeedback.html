@@ -1,0 +1,33 @@
+{% extends "dashboard.html" %}
+
+{% block title %}
+    Send Feedback
+{% endblock %}
+
+{% block main %}
+<div class="w-full flex justify-center items-center lg:pt-15">
+    <div class="w-full lg:w-1/2 bg-white border border-blue-200 rounded-2xl shadow p-6">
+        <h2 class="text-xl font-semibold text-blue-600 mb-4">
+            Send Feedback
+        </h2>
+        <form action="/dashboard/feedback" method="post" class="flex flex-col gap-4">
+            <div>
+                <label class="text-sm text-blue-600">Subject</label>
+                <input name="subject" type="text"
+                    class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Optional subject">
+            </div>
+            <div>
+                <label class="text-sm text-blue-600">Message</label>
+                <textarea name="message" required rows="5"
+                    class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Write your feedback here..."></textarea>
+            </div>
+            <button type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition font-medium">
+                Send Feedback
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

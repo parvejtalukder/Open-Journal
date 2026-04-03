@@ -1,0 +1,30 @@
+{% extends "dashboard.html" %}
+
+{% block title %}
+    Reset Password
+{% endblock %}
+
+{% block main %}
+<div class="w-full flex justify-center items-center lg:pt-15">
+    <div class="w-full lg:w-1/2 bg-white border border-blue-200 rounded-2xl shadow p-6">
+        <h2 class="text-xl font-semibold text-blue-600 mb-4">Reset Password</h2>
+        <form action="/dashboard/reset-password" method="post" class="flex flex-col gap-4">
+            <div>
+                <label class="text-sm text-blue-600">Username</label>
+                <input name="username" value="{{ user.username }}" disabled required type="text"
+                    class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter username">
+            </div>
+            <div>
+                <label class="text-sm text-blue-600">New Password</label>
+                <input name="password" required type="password"
+                    class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter new password">
+            </div>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition font-medium">
+                Update Password
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

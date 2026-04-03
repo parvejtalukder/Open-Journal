@@ -8,12 +8,12 @@
 <div class="w-full flex justify-center">
     <div class="w-full lg:w-2/3 bg-white border border-blue-200 rounded-2xl shadow p-6">
         {% if status == "pending" %}
-            <p class="text-yellow-600 text-center font-medium">Your application is under review</p>
+            <p class="pb-2 underline-offset-1 text-yellow-600 text-center font-medium">Your application is under review</p>
         {% elif status == "accepted" %}
-            <p class="text-green-600 text-center font-medium">You have been approved as an author!</p>
+            <p class="pb-2 underline-offset-1 text-green-600 text-center font-medium">You have been approved as an author!</p>
         {% elif status == "rejected" %}
-            <p class="text-red-600 text-center font-medium">Your application was rejected</p>
-        {% else %}
+            <p class="pb-2 underline-offset-1 text-red-600 text-center font-medium">Your application was rejected</p>
+        {% endif %}
         <div class="mb-6">
             <h2 class="text-xl font-semibold text-blue-600">Apply to be an Author</h2>
             <p class="text-sm text-gray-500">Tell us a bit about yourself and why you’d like to contribute.</p>
@@ -40,7 +40,6 @@
             <button type="submit" class="mt-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition font-medium">Submit Application</button>
             
         </form>
-        {% endif %}
     </div>
 
 </div>

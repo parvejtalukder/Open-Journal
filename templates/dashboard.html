@@ -14,15 +14,13 @@
 
     <body class="max-w-6xl mx-auto transition-all duration-500">
     <header class="sticky z-50 top-2">    
-        {% if get_flashed_messages() %} 
-        <header id="flash-message" class="fixed mx-auto top-40 left-2/2 right-1/2 w-full bg-slate-700 rounded-md p-5 z-50 shadow-lg transform transition-all duration-1000"> 
-            <!-- <div class="bg-blue-100 text-blue-800 px-4 py-3 rounded text-center shadow"> {{ get_flashed_messages() | join(" ") }} </div>  -->
-            <div id="toast-top-left" class="fixed flex items-center w-full max-w-xs p-4 text-body bg-blue-300 border-blue-600 rounded-xl shadow-xs border border-default top-5 start-5" role="alert">
-                <div class="text-sm font-normal">{{ get_flashed_messages() | join(" ") }}</div>
-            </div>
-        </header> 
-        {% endif %}
-
+      {% if get_flashed_messages() %}
+      <div class="fixed z-50 bottom-4 right-4 left-1/2 transform -translate-x-1/2 md:left-auto md:translate-x-0">
+          <div class="bg-blue-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm animate-fade-in">
+              {{ get_flashed_messages() | join(" ") }}
+          </div>
+      </div>
+      {% endif %}
         <main class="py-3 lg:mx-auto mx-3"> 
             <div class="antialiased bg-gray-50 ">
                 <nav class="bg-white border-b border-blue-600 px-4 py-2.5 fixed left-0 right-0 top-0 z-50">
@@ -135,7 +133,7 @@
                         >
                           <li>
                             <a
-                              href="#"
+                              href="/dashboard/profile"
                               class="block py-2 px-4 text-sm hover:bg-blue-200 "
                               >My profile</a
                             >
@@ -209,26 +207,7 @@
             </a>
           </li>
           {% endif %}
-          {% if user.role == "author" %}
-          <li>
-            <a
-              href="/dashboard/overview"
-              class="flex items-center p-2 text-base font-medium text-blue-600 rounded-lg  group"
-            >
-              <svg
-                aria-hidden="true"
-                class="w-6 h-6 text-blue-600 transition duration-75 e"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-              </svg>
-              <span class="ml-3">Overview</span>
-            </a>
-          </li>
-          {% endif %}
+          
           {% if user.role == "author" or user.role == "admin" %}
           <li>
             <button
@@ -280,14 +259,14 @@
               {% if user.role == "admin" %}
               <li>
                 <a
-                  href="dashboard/pages"
+                  href="/dashboard/my-posts"
                   class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-400"
-                  >Pages</a
+                  >My Posts</a
                 >
               </li>
               <li>
                 <a
-                  href="dashboard/applications"
+                  href="/dashboard/applications"
                   class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-400"
                   >Applications</a
                 >
@@ -304,19 +283,11 @@
               aria-controls="dropdown-sales"
               data-collapse-toggle="dropdown-sales"
             >
-              <svg
-                aria-hidden="true"
-                class="flex-shrink-0 w-6 h-6 text-blue-600 transition duration-75 group-hover:text-blue-600 "
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
-                  clip-rule="evenodd"
-                ></path>
-              </svg>
+              <svg class="flex-shrink-0 w-6 h-6 text-blue-600 transition duration-75 group-hover:text-blue-600 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+  <path fill-rule="evenodd" d="M11.403 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6.403a3.01 3.01 0 0 1-1.743-1.612l-3.025 3.025A3 3 0 1 1 9.99 9.768l3.025-3.025A3.01 3.01 0 0 1 11.403 5Z" clip-rule="evenodd"/>
+  <path fill-rule="evenodd" d="M13.232 4a1 1 0 0 1 1-1H20a1 1 0 0 1 1 1v5.768a1 1 0 1 1-2 0V6.414l-6.182 6.182a1 1 0 0 1-1.414-1.414L17.586 5h-3.354a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+</svg>
+
               <span class="flex-1 ml-3 text-left whitespace-nowrap"
                 >Application</span
               >
@@ -385,7 +356,7 @@
             <ul id="dropdown-authentication" class="hidden py-2 space-y-2">
               <li>
                 <a
-                  href="dashboard/reset-password"
+                  href="/dashboard/reset-password"
                   class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-400"
                   >Reset Password</a
                 >
@@ -399,18 +370,8 @@
               aria-controls="dropdown-feedback"
               data-collapse-toggle="dropdown-feedback"
             >
-              <svg
-                aria-hidden="true"
-                class="flex-shrink-0 w-6 h-6 text-blue-600 transition duration-75 group-hover:text-blue-600 "
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                  clip-rule="evenodd"
-                ></path>
+              <svg class="flex-shrink-0 w-6 h-6 text-blue-600 transition duration-75 group-hover:text-blue-600 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z" clip-rule="evenodd"/>
               </svg>
               <span class="flex-1 ml-3 text-left whitespace-nowrap"
                 >Opinion</span
@@ -432,7 +393,7 @@
             <ul id="dropdown-feedback" class="hidden py-2 space-y-2">
               <li>
                 <a
-                  href="dashboard/feedback"
+                  href="/dashboard/feedback"
                   class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-400"
                   >Send feedback</a
                 >

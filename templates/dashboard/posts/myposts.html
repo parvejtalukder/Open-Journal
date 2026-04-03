@@ -8,16 +8,8 @@
 <div class="w-full h-full space-y-4"> 
     <div class="flex justify-between items-center">
         <h2 class="text-2xl font-semibold">
-            {% if user["role"] == "author" %}
             My Posts ({{ posts_count }})
-            {% else %}
-            All Posts ({{ posts_count }})
-            {% endif %}
         </h2>
-        <a href="/dashboard/posts/create"
-           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            + Create Post
-        </a>
     </div>
     <div class="overflow-x-auto bg-white shadow rounded-xl border border-gray-200">
         <table class="w-full text-sm text-left">
@@ -27,7 +19,7 @@
                     <th class="px-6 py-3 font-semibold">Author</th>
                     <th class="px-6 py-3 font-semibold">Category</th>
                     <th class="px-6 py-3 font-semibold">Date</th>
-                    <th class="px-6 py-3 font-semibold text-right">Action</th>
+                    <!-- <th class="px-6 py-3 font-semibold text-right">Action</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -45,16 +37,6 @@
                         </td>
                         <td class="px-6 py-4 text-gray-500">
                             {{ post.created_at[:10] }}
-                        </td>
-                        <td class="px-6 flex justify-between items-center py-4 gap-2 text-right">
-                            <a href="/news?p={{ post.id }}"
-                               class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
-                                View
-                            </a>
-                            <a href="/dashboard/posts/edit/{{ post.id }}"
-                               class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
-                                Edit
-                            </a>
                         </td>
                     </tr>
                     {% endfor %}

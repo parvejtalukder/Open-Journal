@@ -240,10 +240,55 @@ def be_author():
         status = result[0]["status"] if result else None
 
         return render_template("dashboard/reader/applicationauthor.html", user=get_current_user(), status=status)
+    
+@app.route("/dashboard/applications", methods=["GET", "POST"])
+@login_required
+@role_required("admin")
+def overview_application():
+
+    applications = db.execute(
+    """
+        SELECT applications.*, users.username
+        FROM applications
+        JOIN users ON applications.user_id = users.id
+        WHERE applications.status = 'pending'
+    """
+    )
+    applications_count = db.execute("SELECT COUNT(*) AS total FROM applications WHERE status = 'pending'")[0]["total"]
+
+    return render_template("dashboard/admin/applications.html", user=get_current_user(), applications=applications, applications_count=applications_count)
+
+
+@app.route("/dashboard/applications/edit/<int:id>", methods=["POST"])
+@login_required
+@role_required("admin")
+def update_application(id):
+
+    status = request.form.get("status")
+
+    db.execute(
+        "UPDATE applications SET status = ? WHERE id = ?",
+        status, id
+    )
+
+    if status == "approved":
+        user = db.execute(
+            "SELECT user_id FROM applications WHERE id = ?",
+            id
+        )[0]
+
+        db.execute(
+            "UPDATE users SET role = 'author' WHERE id = ?",
+            user["user_id"]
+        )
+
+    flash("Application updated!")
+    return redirect("/dashboard/applications")
+
 
 @app.route("/dashboard/overview", methods=["GET", "POST"])
 @login_required
-@role_required("admin",)
+@role_required("admin")
 def overview_admin():
     curr_user = get_current_user();
     # url_path = request.base_url();
@@ -294,7 +339,50 @@ def overview_posts():
     prev = page > 1
     post_count = len(posts);
 
-    return render_template("dashboard/posts/posts.html", user=get_current_user(), next=next, prev=prev, posts=posts, page=page, posts_count=post_count)
+    user = get_current_user()
+    if user["role"] == "author":
+
+        posts = db.execute("""
+                SELECT posts.*, users.name AS author_name
+                FROM posts
+                JOIN users ON posts.user_id = users.id
+                WHERE posts.user_id = ?
+                ORDER BY posts.created_at DESC
+                LIMIT ? OFFSET ?
+        """, session["user_id"], per_page, offset)
+        post_count = len(posts);
+    
+        return render_template("dashboard/posts/posts.html", user=get_current_user(), next=next, prev=prev, posts=posts, page=page, posts_count=post_count)
+
+    else:
+        return render_template("dashboard/posts/posts.html", user=get_current_user(), next=next, prev=prev, posts=posts, page=page, posts_count=post_count)
+    
+@app.route("/dashboard/my-posts", methods=["GET", "POST"])
+@login_required
+@role_required("admin")
+def overview_my_posts():
+
+    page = request.args.get("page", 1, type=int)
+    per_page = 5
+    offset = (page - 1) * per_page
+
+    posts = db.execute("""
+                SELECT posts.*, users.name AS author_name
+                FROM posts
+                JOIN users ON posts.user_id = users.id
+                WHERE posts.user_id = ?
+                ORDER BY posts.created_at DESC
+                LIMIT ? OFFSET ?
+        """, session["user_id"], per_page, offset)
+
+    total = db.execute("SELECT COUNT(*) as count FROM posts WHERE posts.user_id = ? ", (session["user_id"]))[0]["count"]
+    next = total > page * per_page
+    prev = page > 1
+    post_count = total
+
+    return render_template("dashboard/posts/myposts.html", user=get_current_user(), next=next, prev=prev, posts=posts, page=page, posts_count=post_count)
+    
+
 
 @app.route("/dashboard/posts/create", methods=["GET", "POST"])
 @login_required
@@ -375,6 +463,58 @@ def page():
     }
 
     return render_template("/page.html", page=page)
+
+@app.route("/dashboard/reset-password", methods=["GET", "POST"])
+@login_required
+@role_required("admin", "author", "reader")
+def reset_password():
+
+    if request.method == "POST":
+        
+        password = request.form.get("password")
+        if not password:
+            flash("All fields are required")
+            return redirect("/dashboard/reset-password")
+        
+        new_hash = generate_password_hash(password)
+
+        db.execute("""
+            UPDATE users
+            SET hash = ?
+            WHERE id = ?
+        """, new_hash, session["user_id"])
+
+        flash("Password updated successfully!")
+        return redirect("/dashboard")
+
+    return render_template("dashboard/resetpass.html", user=get_current_user())
+
+
+@app.route("/dashboard/feedback", methods=["GET", "POST"])
+@login_required
+def feedback():
+
+    if request.method == "POST":
+
+        subject = request.form.get("subject")
+        message = request.form.get("message")
+        user_id = session["user_id"]
+
+        if not message:
+            flash("Message is required")
+            return redirect("/dashboard/feedback")
+
+        db.execute("""
+            INSERT INTO feedback (user_id, subject, message)
+            VALUES (?, ?, ?)
+        """, user_id, subject, message)
+
+        flash("Feedback sent successfully!")
+        return redirect("/dashboard")
+
+    return render_template("dashboard/sendfeedback.html", user=get_current_user())
+
+
 
 @app.errorhandler(404)
 def page_not_found(e):
