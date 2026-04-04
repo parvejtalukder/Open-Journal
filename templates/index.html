@@ -29,7 +29,7 @@
     <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Featured News</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {% for news in newses %}
-      <div class="rounded border border-blue-600 shadow hover:bg-blue-200">
+      <a href="/news?p={{ news.id }}" class="rounded border border-blue-600 shadow hover:bg-blue-200">
         <img class="w-full h-48 object-cover" src="/static/uploads/{{ news.image }}">
         <div class="p-4">
           <h3 class="font-bold text-lg mb-2">{{ news.title }}</h3>
@@ -39,7 +39,7 @@
             <span class="bg-gray-200 px-2 py-1 rounded"> By @{{ news.author_name }} </span>
           </div>
         </div>
-      </div>
+      </a>
       {% endfor %}
     </div>
   </div>
@@ -79,22 +79,12 @@
   <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Tech News</h2>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
-      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
-      <p class="text-sm">Biggest deals so far this year.</p>
+    {% for tech in techs %}
+    <a href="/news?p={{ tech.id }}" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
+      <h3 class="font-semibold mb-2">{{ tech.title }}</h3>
+      <p class="text-sm">{{ tech.content | truncate(30, True, '...') }}</p>
     </a>
-    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
-      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
-      <p class="text-sm">Biggest deals so far this year.</p>
-    </a>
-    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
-      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
-      <p class="text-sm">Biggest deals so far this year.</p>
-    </a>
-    <a href="#" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
-      <h3 class="font-semibold mb-2">Tech acquisitions in 2025</h3>
-      <p class="text-sm">Biggest deals so far this year.</p>
-    </a>
+    {% endfor %}
   </div>
 </section>
 
@@ -103,92 +93,44 @@
   <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Sports News</h2>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    {% for sport in sports %}
     <div class="flex flex-col md:flex-row border border-blue-600 rounded p-4 hover:bg-blue-200">
       <img class="w-full md:w-48 h-24 object-cover mb-3 md:mb-0"
-           src="https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png">
+           src="/static/uploads/{{ sport.image }}">
       <div class="md:ml-4">
-        <h3 class="font-bold mb-2">Design process improvements</h3>
-        <p class="text-sm mb-2">Better collaboration tools emerging.</p>
-        <button class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</button>
+        <h3 class="font-bold mb-2">{{ sport.title }}</h3>
+        <p class="text-sm mb-2">{{ sports.content | truncate(50, True, '...') }}</p>
+        <a href="/news?p={{ sport.id }}" class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</a>
       </div>
     </div>
-
-    <div class="flex flex-col md:flex-row border border-blue-600 rounded p-4 hover:bg-blue-200">
-      <img class="w-full md:w-48 h-24 object-cover mb-3 md:mb-0"
-           src="https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png">
-      <div class="md:ml-4">
-        <h3 class="font-bold mb-2">Design process improvements</h3>
-        <p class="text-sm mb-2">Better collaboration tools emerging.</p>
-        <button class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</button>
-      </div>
-    </div>
+    {% endfor %}
   </div>
 </section>
 <section class="mb-12">
   <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Opinions</h2>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    {% for opinion in opinions %}
     <div class="flex flex-col md:flex-row border border-blue-600 rounded p-4 hover:bg-blue-200">
       <img class="w-full md:w-48 h-24 object-cover mb-3 md:mb-0"
-           src="https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png">
+           src="/static/uploads/{{ opinion.image }}">
       <div class="md:ml-4">
-        <h3 class="font-bold mb-2">Design process improvements</h3>
-        <p class="text-sm mb-2">Better collaboration tools emerging.</p>
-        <button class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</button>
-      </div>
+        <h3 class="font-bold mb-2">{{ opinion.title }}</h3>
+        <p class="text-sm mb-2">{{ opinion.content | truncate(50, True, '...') }}</p>
+        <a href="/news?p={{ opinion.id }}" class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</button>
+        </a>
     </div>
-    <div class="flex flex-col md:flex-row border border-blue-600 rounded p-4 hover:bg-blue-200">
-      <img class="w-full md:w-48 h-24 object-cover mb-3 md:mb-0"
-           src="https://en.kavyakishor.com/wp-content/uploads/2024/12/Screenshot-2024-12-07-11.46.53-AM.png">
-      <div class="md:ml-4">
-        <h3 class="font-bold mb-2">Design process improvements</h3>
-        <p class="text-sm mb-2">Better collaboration tools emerging.</p>
-        <button class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</button>
-      </div>
     </div>
-  </div>
+    {% endfor %}
 </section>
 
 
 <section>
   <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Latest Posts</h2>
-  <div class="flex lg:flex-row flex-col lg:justify-around justify-start lg:items-center items-start">
-    <ol class="border-l border-blue-600 pl-4 space-y-6">
-        <li>
-          <p class="text-sm text-gray-500">February 2022</p>
-          <h3 class="font-semibold">Tailwind UI development</h3>
-          <p class="text-sm">Modern UI tools for developers.</p>
-        </li>
-        <li>
-          <p class="text-sm text-gray-500">March 2022</p>
-          <h3 class="font-semibold">Marketing design in Figma</h3>
-          <p class="text-sm">UI/UX improvements in workflow.</p>
-        </li>
-    </ol>
-    <ol class="border-l border-blue-600  pl-4 space-y-6">
-        <li>
-          <p class="text-sm text-gray-500">February 2022</p>
-          <h3 class="font-semibold">Tailwind UI development</h3>
-          <p class="text-sm">Modern UI tools for developers.</p>
-        </li>
-        <li>
-          <p class="text-sm text-gray-500">March 2022</p>
-          <h3 class="font-semibold">Marketing design in Figma</h3>
-          <p class="text-sm">UI/UX improvements in workflow.</p>
-        </li>
-    </ol>
-    <ol class="border-l border-blue-600  pl-4 space-y-6">
-        <li>
-          <p class="text-sm text-gray-500">February 2022</p>
-          <h3 class="font-semibold">Tailwind UI development</h3>
-          <p class="text-sm">Modern UI tools for developers.</p>
-        </li>
-        <li>
-          <p class="text-sm text-gray-500">March 2022</p>
-          <h3 class="font-semibold">Marketing design in Figma</h3>
-          <p class="text-sm">UI/UX improvements in workflow.</p>
-        </li>
-    </ol>
+  <div class="py-2 grid grid-cols-1 lg:grid-cols-3 justify-start lg:items-center items-start space-x-3">
+    {% for last in lasts %}
+    <li class="mx-10"><a  class="text-blue-700" href="/news?p={{ last.id }}">{{ last.title }}</a></li>
+    {% endfor %}
   </div>
 </section>
 

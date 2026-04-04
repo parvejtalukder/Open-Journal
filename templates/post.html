@@ -1,11 +1,12 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    {{ post.title }}
+    {{ post.title or "No post found!" }}
 {% endblock %}
 
 {% block main %}
 
+{% if post %}
 <article>
 
 
@@ -34,8 +35,8 @@
 
     <div class="max-w-4xl -mt-4 mx-auto px-4 pt-10">
     <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight hover:text-blue-600">{{ post.title }}</h1>
-    <div class="flex items-center text-sm text-gray-500 mb-6">
-      <span>By {{ post.author_name }}</span>
+    <div class="flex items-center text-sm text-gray-500  mb-6">
+      <a href="/author/{{ post.user_id }}"><span class="hover:text-blue-600">By {{ post.author_name or "system" }}</span></a>
       <span class="mx-2">•</span>
       <span>Published at {{ post.created_at }}</span>
     </div>
@@ -56,50 +57,18 @@
 
   </div>
   <div class="flex justify-around items-center py-4">
-    <button class="btn bg-blue-600 hover:bg-blue-300 py-2 px-3 rounded-lg" >Prev</button>
-    <button class="btn bg-blue-600 hover:bg-blue-300 py-2 px-3 rounded-lg" >Next</button>
+    <a href="/news?p={{ post.id - 1 }}" class="btn bg-blue-600 hover:bg-blue-300 py-2 px-3 rounded-lg" >Prev</a>
+    <a href="/news?p={{ post.id + 1 }}" class="btn bg-blue-600 hover:bg-blue-300 py-2 px-3 rounded-lg" >Next</a>
   </div>
-  <section>
-  <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Latest Posts</h2>
-  <div class="flex lg:flex-row flex-col lg:justify-around justify-start lg:items-center items-start">
-    <ol class="border-l border-blue-600 pl-4 space-y-6">
-        <li>
-          <p class="text-sm text-gray-500">February 2022</p>
-          <h3 class="font-semibold">Tailwind UI development</h3>
-          <p class="text-sm">Modern UI tools for developers.</p>
-        </li>
-        <li>
-          <p class="text-sm text-gray-500">March 2022</p>
-          <h3 class="font-semibold">Marketing design in Figma</h3>
-          <p class="text-sm">UI/UX improvements in workflow.</p>
-        </li>
-    </ol>
-    <ol class="border-l border-blue-600  pl-4 space-y-6">
-        <li>
-          <p class="text-sm text-gray-500">February 2022</p>
-          <h3 class="font-semibold">Tailwind UI development</h3>
-          <p class="text-sm">Modern UI tools for developers.</p>
-        </li>
-        <li>
-          <p class="text-sm text-gray-500">March 2022</p>
-          <h3 class="font-semibold">Marketing design in Figma</h3>
-          <p class="text-sm">UI/UX improvements in workflow.</p>
-        </li>
-    </ol>
-    <ol class="border-l border-blue-600  pl-4 space-y-6">
-        <li>
-          <p class="text-sm text-gray-500">February 2022</p>
-          <h3 class="font-semibold">Tailwind UI development</h3>
-          <p class="text-sm">Modern UI tools for developers.</p>
-        </li>
-        <li>
-          <p class="text-sm text-gray-500">March 2022</p>
-          <h3 class="font-semibold">Marketing design in Figma</h3>
-          <p class="text-sm">UI/UX improvements in workflow.</p>
-        </li>
-    </ol>
-  </div>
-</section>
+
 </article>
+{% else %}
+<div class="flex justify-center items-center min-h-[60vh]">    
+    <div class="bg-red-100 border border-red-300 text-red-700 p-8 rounded-2xl shadow-md max-w-md w-full text-center">
+        <h1 class="text-xl font-bold mb-4">Ohh, No!</h1>
+        <p class="mb-6 text-2xl font-bold">NO POST FOUND!</p>
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}

@@ -82,8 +82,50 @@ def index():
         """, (4,)
         )
     
+    tech = db.execute(
+        """
+            SELECT posts.*, users.username AS author_name
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+            WHERE posts.category = "tech"
+            ORDER BY posts.created_at DESC
+            LIMIT ?
+        """, (4,)
+        )
+    
+    sports = db.execute(
+        """
+            SELECT posts.*, users.username AS author_name
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+            WHERE posts.category = "sports"
+            ORDER BY posts.created_at DESC
+            LIMIT ?
+        """, (2,)
+        )
+    
+    opinions = db.execute(
+        """
+            SELECT posts.*, users.username AS author_name
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+            WHERE posts.category = "opinion"
+            ORDER BY posts.created_at DESC
+            LIMIT ?
+        """, (2,)
+        )
+    
+    lasts = db.execute(
+        """
+            SELECT posts.*, users.username AS author_name
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+            ORDER BY posts.created_at DESC
+            LIMIT ?
+        """, (3,)
+        )
 
-    return render_template("index.html", posts=posts, newses=news, entertainments=entertainment)
+    return render_template("index.html", posts=posts, newses=news, entertainments=entertainment, techs=tech, sports=sports, opinions=opinions, lasts=lasts)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -375,7 +417,7 @@ def overview_posts():
         return render_template("dashboard/posts/posts.html", user=get_current_user(), next=next, prev=prev, posts=posts, page=page, posts_count=post_count)
 
     else:
-        return render_template("dashboard/posts/posts.html", user=get_current_user(), next=next, prev=prev, posts=posts, page=page, posts_count=post_count)
+        return render_template("dashboard/posts/posts.html", user=get_current_user(), next=next, prev=prev, posts=posts, page=page, posts_count=total)
     
 @app.route("/dashboard/my-posts", methods=["GET", "POST"])
 @login_required
@@ -545,7 +587,7 @@ def profile():
 def users_overview():
 
     page = request.args.get("page", 1, type=int)
-    per_page = 2
+    per_page = 3
     offset = (page - 1) * per_page
 
     users = db.execute("""
@@ -559,8 +601,7 @@ def users_overview():
     next = offset + per_page < total
     prev = page > 1
 
-    return render_template( "dashboard/admin/users.html", user=get_current_user(), users=users, users_count=total, page=page, next=next, prev=prev
-    )
+    return render_template( "dashboard/admin/users.html", user=get_current_user(), users=users, users_count=total, page=page, next=next, prev=prev)
 
 
 @app.route("/author/<int:user_id>")
@@ -593,8 +634,53 @@ def public_author(user_id):
     next = total > page * per_page
     prev = page > 1
 
-    return render_template( "profile.html", author=author[0], posts=posts, page=page, next=next, prev=prev
-    )
+    return render_template( "profile.html", author=author[0], posts=posts, page=page, next=next, prev=prev)
+
+@app.route("/dashboard/user/delete/<int:user_id>", methods=["POST"])
+@login_required
+@role_required("admin")
+def delete_user(user_id):
+    db.execute("DELETE FROM users WHERE id = ?", user_id)
+    flash("User deleted successfully!")
+    return redirect("/dashboard/users")
+
+@app.route("/dashboard/posts/delete/<int:post_id>", methods=["POST"])
+@login_required
+@role_required("admin")
+def delete_post(post_id):
+    db.execute("DELETE FROM posts WHERE id = ?", post_id)
+    flash("Post deleted successfully!")
+    return redirect("/dashboard/posts")
+
+@app.route("/dashboard/posts/edit/<int:post_id>", methods=["POST"])
+@login_required
+@role_required("admin", "author")
+def edit_post(post_id):
+    title = request.form.get("title")
+    category = request.form.get("category")
+    content = request.form.get("content")
+
+    image = request.files.get("image")
+
+    if image and image.filename != "":
+        file_loc = os.path.join("static/uploads", image.filename)
+        image.save(file_loc)
+
+        db.execute("""
+            UPDATE posts
+            SET title = ?, category = ?, content = ?, image = ?
+            WHERE id = ?
+        """, title, category, content, file_loc, post_id)
+    else:
+        db.execute("""
+            UPDATE posts
+            SET title = ?, category = ?, content = ?
+            WHERE id = ?
+        """, title, category, content, post_id)
+    
+    flash("Post edited successfully!")
+    return redirect("/dashboard/posts")
+
 
 @app.errorhandler(404)
 def page_not_found(e):

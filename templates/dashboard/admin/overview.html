@@ -65,7 +65,7 @@
     </h2>
 
     {% if feedbacks %}
-    <div class="space-y-3 grid lg:grid-cols-3 grid-cols-1">
+    <div class="gap-3 grid lg:grid-cols-3 grid-cols-1">
         {% for fb in feedbacks %}
         <div class="p-3 border rounded-xl bg-gray-50">
             
@@ -98,9 +98,9 @@
 <div class="flex justify-between items-center mt-6">
     
     {% if fb_prev %}
-    <a href="{{ url_for('overview_admin', fb_page=fb_page-1) }}"
+    <a href="{{ url_for('/dashboard/overview', fb_page=fb_page-1) }}"
        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
-        ← Prev
+        Prev
     </a>
     {% else %}
     <div></div>
@@ -111,9 +111,9 @@
     </span>
 
     {% if fb_next %}
-    <a href="{{ url_for('overview_admin', fb_page=fb_page+1) }}"
+    <a href="{{ url_for('/dashboard/overview', fb_page=fb_page+1) }}"
        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
-        Next →
+        Next
     </a>
     {% endif %}
 
