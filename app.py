@@ -7,6 +7,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import error, login_required
 from werkzeug.utils import secure_filename
 from functools import wraps
+from flask import jsonify
 
 app = Flask(__name__)
 
@@ -680,6 +681,21 @@ def edit_post(post_id):
     
     flash("Post edited successfully!")
     return redirect("/dashboard/posts")
+
+
+@app.route("/headlines")
+def api_headlines():
+    posts = db.execute("SELECT id, title FROM posts ORDER BY created_at DESC LIMIT 5")
+    return jsonify(posts)
+
+@app.route("/about")
+def about_oj():
+    return render_template("about.html")
+
+
+@app.route("/contact")
+def contact_oj():
+    return render_template("contact.html")
 
 
 @app.errorhandler(404)

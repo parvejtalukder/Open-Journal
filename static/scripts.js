@@ -11,25 +11,26 @@ btn.addEventListener("click", () => {
     menu.classList.toggle("hidden");
 });
 
-const headlines = [
-  "Breaking: New policy announced today",
-  "Sports: Team wins championship",
-  "Tech: New AI model released",
-  "World: Major global event happening",
-  "Breaking: New policy announced today",
-  "Sports: Team wins championship",
-  "Tech: New AI model released",
-  "World: Major global event happening",
-];
 
+let headlines = [];
 const ticker = document.getElementById("updates");
-ticker.innerHTML = headlines.map(h => `    🔴 ${h}    `).join(" ");
 
-setTimeout(() => {
-    const flash = document.getElementById("flash-message");
-    if (flash) {
-      flash.style.transition = "opacity 0.5s ease";
-      flash.style.opacity = "0";
-      setTimeout(() => flash.remove(), 500); 
-    }
-  }, 3000);
+const updateUI = () => {
+  ticker.innerHTML = headlines.map(h => 
+    `<a href="/news?p=${h.id}" class="mx-4 hover:underline">🔴 ${h.title}</a>`
+  ).join(" ");
+};
+
+const getHeadlines = () => {
+  fetch("http://127.0.0.1:5000/headlines") 
+    .then(res => res.json())
+    .then(data => {
+      headlines = data;
+      updateUI(); 
+    })
+    .catch(err => console.error("Update failed:", err));
+};
+
+getHeadlines(); 
+setInterval(getHeadlines, 10000);
+console.log(headlines)

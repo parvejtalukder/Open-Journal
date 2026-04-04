@@ -37,7 +37,11 @@
             <textarea required name="message" rows="5" placeholder="Share your experience, interests, or writing style..." class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             ></textarea>
             </div>
+            {% if status in ["pending","accepted"] %}
+            <button disabled type="submit" class="mt-2 bg-blue-600 hover:bg-blue-700/20 text-white py-3 rounded-xl transition font-medium">Submit Application</button>
+            {% else %}
             <button type="submit" class="mt-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition font-medium">Submit Application</button>
+            {% endif %}
             
         </form>
     </div>
