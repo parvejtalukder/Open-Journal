@@ -135,25 +135,27 @@ def login():
 
     if request.method == "POST":
 
-        if not request.form.get("username"):
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if not username:
             return error("Must provide username!", 403)
 
-        elif not request.form.get("password"):
+        elif not password:
             return error("Must provide password!", 403)
 
         rows = db.execute(
-            "SELECT * FROM users WHERE username = ?", request.form.get("username")
+            "SELECT * FROM users WHERE username = ? AND is_active = 1",
+                username
         )
 
-        if len(rows) != 1 or not check_password_hash(
-            rows[0]["hash"], request.form.get("password")
-        ):
+        if not rows or not check_password_hash(rows[0]["hash"], password):
             return error("Invalid username or password!", 403)
 
         session["user_id"] = rows[0]["id"]
 
         flash("Logged in successfully!")
-        return redirect("/")
+        return redirect("/dashboard")
 
     else:
         return render_template("login.html")
@@ -206,8 +208,7 @@ def register():
         
         hash = generate_password_hash(password)
 
-        existing_user = db.execute("SELECT * FROM users WHERE username = ?", username)
-        if len(existing_user) != 0:
+        if db.execute("SELECT 1 FROM users WHERE username = ?", username):
             return error("Username already taken!")
         
         existing_email = db.execute("SELECT * FROM users WHERE email = ?", email)

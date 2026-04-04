@@ -99,7 +99,7 @@
            src="/static/uploads/{{ sport.image }}">
       <div class="md:ml-4">
         <h3 class="font-bold mb-2">{{ sport.title }}</h3>
-        <p class="text-sm mb-2">{{ sports.content | truncate(50, True, '...') }}</p>
+        <p class="text-sm mb-2">{{ sport.content | truncate(50, True, '...') }}</p>
         <a href="/news?p={{ sport.id }}" class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</a>
       </div>
     </div>
@@ -117,7 +117,7 @@
       <div class="md:ml-4">
         <h3 class="font-bold mb-2">{{ opinion.title }}</h3>
         <p class="text-sm mb-2">{{ opinion.content | truncate(50, True, '...') }}</p>
-        <a href="/news?p={{ opinion.id }}" class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</button>
+        <a href="/news?p={{ opinion.id }}" class="text-sm bg-blue-600 px-3 py-1 rounded">Read more
         </a>
     </div>
     </div>
