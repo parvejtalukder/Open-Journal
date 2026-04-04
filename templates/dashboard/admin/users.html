@@ -52,10 +52,20 @@
                                class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
                                 View
                             </a>
-                            <!-- <button data-modal-target="edit-modal-{{ user_item.id }}" data-modal-toggle="edit-modal-{{ user_item.id }}" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">Edit</button> -->
-                            <button data-modal-target="delete-modal-{{ user_item.id }}" data-modal-toggle="delete-modal-{{ user_item.id }}" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm">Delete</button>
+
+                            {% if user_item.role == "reader" %}
+                            <button data-modal-target="delete-modal-{{ user_item.id }}" data-modal-toggle="delete-modal-{{ user_item.id }}" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm">
+                                Delete
+                            </button>
+                            {% else %}
+                            <span class="px-3 py-1 text-xs text-gray-400 italic">
+                                Protected
+                            </span>
+                            {% endif %}
                         </td>
                     </tr>
+
+                    {% if user_item.role == "reader" %}
                     <div id="delete-modal-{{ user_item.id }}" tabindex="-1" aria-hidden="true"
                          class="hidden fixed inset-0 z-50 flex justify-center items-center bg-white/90">
 
@@ -63,32 +73,27 @@
                         
                             <h3 class="text-lg font-semibold text-gray-800 mb-4">Confirm Delete</h3>
                         
-                            {% if user.role == "reader" %}
                             <p class="text-sm text-gray-600">
                                 Are you sure you want to delete <strong>{{ user_item.username }}</strong>?
                             </p>
-                            {% else %}
-                            <p class="text-sm text-gray-600">
-                                Not recommonded to delete author <strong>{{ user_item.username }}</strong>?
-                            </p>
-                            {% endif %}
                         
                             <div class="flex justify-end gap-3 mt-6">
                                 <button type="button" data-modal-hide="delete-modal-{{ user_item.id }}"
                                     class="px-4 py-2 rounded-lg bg-gray-200">
                                     Cancel
                                 </button>
-                            {% if user.role == "reader" %}
+                            
                                 <form action="/dashboard/user/delete/{{ user_item.id }}" method="POST">
                                     <button type="submit"
                                         class="px-4 py-2 rounded-lg bg-red-600 text-white">
                                         Delete
                                     </button>
                                 </form>
-                            {% endif %}    
+                             
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                     {% endfor %}
                 {% else %}
                     <tr>
@@ -101,7 +106,6 @@
         </table>
     </div>
 
-    <!-- Pagination -->
     <div class="flex justify-between items-center">
         {% if prev %}
         <a href="{{ url_for('users_overview', page=page-1) }}"

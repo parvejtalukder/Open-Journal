@@ -337,19 +337,19 @@ def overview_admin():
     # url_path = request.base_url();
 
     user_list = db.execute(
-        "SELECT * FROM users;")
+        "SELECT * FROM users WHERE is_active = 1;")
     user_len = len(user_list)
 
     admin_list = db.execute(
-        "SELECT * FROM users WHERE users.role = ?", "admin")
+        "SELECT * FROM users WHERE is_active = 1 AND users.role = ?", "admin")
     admin_len= len(admin_list)
 
     author_list = db.execute(
-        "SELECT * FROM users WHERE users.role = ?", "author")
+        "SELECT * FROM users WHERE is_active = 1 AND users.role = ?", "author")
     author_len= len(author_list)
 
     reader_list = db.execute(
-        "SELECT * FROM users WHERE users.role = ?", "reader")
+        "SELECT * FROM users WHERE is_active = 1 AND users.role = ?", "reader")
     reader_len= len(reader_list)
 
     result = db.execute("SELECT COUNT(*) AS total FROM posts")
@@ -359,7 +359,7 @@ def overview_admin():
     fb_per_page = 3
     fb_offset = (fb_page - 1) * fb_per_page
 
-    feedbacks = db.execute(
+    feedbacks = db.execute( 
         """
             SELECT feedback.*, users.username
             FROM feedback
@@ -376,9 +376,10 @@ def overview_admin():
     fb_prev = fb_page > 1
 
     appli_count = db.execute("SELECT COUNT(*) AS total FROM applications")[0]["total"]
+    appli_active = db.execute("SELECT COUNT(*) AS total FROM applications WHERE applications.status = 'pending'")[0]["total"]
     feedback_count = db.execute("SELECT COUNT (*) AS total FROM feedback")[0]["total"]
 
-    return render_template("dashboard/admin/overview.html", user=curr_user, user_count=user_len, admin_count=admin_len, author_count=author_len, reader_count=reader_len, posts_count=posts_count, appli_count=appli_count, feedback_count=feedback_count,feedbacks=feedbacks, fb_next=fb_next, fb_prev=fb_prev, fb_page=fb_page,)
+    return render_template("dashboard/admin/overview.html", user=curr_user, user_count=user_len, admin_count=admin_len, author_count=author_len, reader_count=reader_len, posts_count=posts_count, appli_count=appli_count, feedback_count=feedback_count,feedbacks=feedbacks, fb_next=fb_next, fb_prev=fb_prev, fb_page=fb_page,appli_active=appli_active,)
 
 @app.route("/dashboard/posts", methods=["GET", "POST"])
 @login_required
@@ -635,11 +636,12 @@ def users_overview():
 
     users = db.execute("""
         SELECT * FROM users
-        ORDER BY created_at DESC
+        WHERE is_active = 1
+        ORDER BY created_at DESC 
         LIMIT ? OFFSET ?
     """, per_page, offset)
 
-    total = db.execute("SELECT COUNT(*) AS count FROM users")[0]["count"]
+    total = db.execute("SELECT COUNT(*) AS count FROM users WHERE is_active = 1")[0]["count"]
 
     next = offset + per_page < total
     prev = page > 1
@@ -683,7 +685,16 @@ def public_author(user_id):
 @login_required
 @role_required("admin")
 def delete_user(user_id):
-    db.execute("DELETE FROM users WHERE id = ?", user_id)
+
+    role = db.execute("SELECT role FROM users WHERE users.id = ?", user_id)[0]["role"]
+
+    if role in ["admin", "author"]:
+        flash("You cannot delete admin or author accounts.")
+        return redirect("/dashboard/users")
+    
+    else:
+        db.execute("UPDATE users SET is_active = 0 WHERE id = ?", user_id)
+
     flash("User deleted successfully!")
     return redirect("/dashboard/users")
 

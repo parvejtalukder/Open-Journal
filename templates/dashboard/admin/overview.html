@@ -47,7 +47,7 @@
         <ul class="space-y-1 text-sm">
             <li class="flex justify-between">
                 <span class="text-gray-500">Applications</span>
-                <span class="font-semibold text-blue-600"> {{ appli_count or 0 }}</span>
+                <span class="font-semibold text-blue-600"> {{ appli_count or 0 }} (ACTIVE: {{appli_active or 0}})</span>
             </li>
             <li class="flex justify-between">
                 <span class="text-gray-500">Feedbacks</span>
@@ -74,7 +74,7 @@
                     @{{ fb.username }}
                 </span>
                 <span class="text-xs text-gray-400">
-                    {{ fb.created_at[:10] }}
+                    {{ fb.created_at }}
                 </span>
             </div>
 
@@ -98,7 +98,7 @@
 <div class="flex justify-between items-center mt-6">
     
     {% if fb_prev %}
-    <a href="{{ url_for('/dashboard/overview', fb_page=fb_page-1) }}"
+    <a href="{{ url_for('overview_admin', fb_page=fb_page-1) }}"
        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
         Prev
     </a>
@@ -111,7 +111,7 @@
     </span>
 
     {% if fb_next %}
-    <a href="{{ url_for('/dashboard/overview', fb_page=fb_page+1) }}"
+    <a href="{{ url_for('overview_admin', fb_page=fb_page+1) }}"
        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
         Next
     </a>

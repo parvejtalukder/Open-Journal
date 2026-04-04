@@ -1,0 +1,2360 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width">
+        <!-- tailwindCss -->
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <!-- https://favicon.io/emoji-favicons/money-bag/ -->
+        <link href="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" rel="icon">
+        <link href="/static/styles.css" rel="stylesheet">
+        <title>{% block title %}{% endblock %} | Open Journal</title>
+
+    </head>
+
+    <body class="max-w-6xl mx-auto transition-all duration-500">
+    <header class="sticky z-50 top-2">    
+    <nav class="bg-blue-600 text-white px-4 lg:py-3 py-1 shadow mt-2 rounded-t-xl mx-3 lg:mx-auto"> 
+        <div class="max-w-7xl mx-auto flex justify-between lg:justify-around items-center"> 
+            <div id="home" onclick="" class="text-lg font-semibold"> Open Journal </div> 
+            <!-- Example right-side nav --> 
+             <div class="hidden md:flex lg:flex">
+                <ul class="flex justify-around items-center space-x-4">
+                    <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/posts">All</a></li>
+                    <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/category/news">News</a></li>
+                    <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/category/entertainment">Entertainment</a></li>
+                    <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/category/sports">Sports</a></li>
+                    <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/category/tech">Tech</a></li>
+                    <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/category/opinion">Opinion</a></li>
+                </ul>
+            </div>
+             <div class="lg:space-x-4 space-x-1 flex justify-center items-center "> 
+                {% if session["user_id"] %} 
+                    <!-- <a href="/logout" class="hover:underline">Log Out</a>  -->
+                    <a href="/dashboard" class="hover:underline"><svg
+              class="w-6 h-6 text-white"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+              ></path>
+            </svg></a> 
+                {% else %} 
+
+                    <a href="/login" class="hover:underline btn">Log In</a> 
+                    <!-- <a href="/register" class="hidden lg:block hover:underline">Register</a>  -->
+                {% endif %} 
+                <!-- <img src="/static/manu.png" id="menuBtn" class="p-3 block lg:hidden w-14 h-auto"> -->
+                <svg id="menuBtn" class="p-3 block lg:hidden w-14 h-auto text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5"/>
+                </svg>
+            </div> 
+        </div> 
+    </nav>
+    <div class="bg-black overflow-hidden lg:mx-auto mx-3 flex justify-between items-center">
+        <div class="bg-white px-2 text-red-600 h-full py-2 flex justify-center font-bold rounded-r-lg z-30 animate-pulse">Updates </div>
+        <div id="updates" class="py-3 whitespace-nowrap text-white"></div>
+    </div>
+</header>
+    <ul id="mobileMenu" class="hidden fixed top-20 right-4 w-2/3 bg-slate-700 rounded-md p-5 space-y-2 z-50 shadow-lg md:hidden transition-all duration-800">
+        <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/posts">All</a></li>
+        <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/category/news">News</a></li>
+        <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/category/entertainment">Entertainment</a></li>
+        <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/category/tech">Tech</a></li>
+        <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/category/sports">Sports</a></li>
+        <li class="list-none"> <a class="no-underline text-white hover:text-blue-200" href="/category/opinion">Opinion</a></li>
+    </ul>
+
+        {% if get_flashed_messages() %} 
+        <header id="flash-message" class="fixed mx-auto top-20 left-3/2 right-1/2 w-full bg-slate-700 rounded-md p-5 z-50 shadow-lg transform transition-all duration-1000"> 
+            <!-- <div class="bg-blue-100 text-blue-800 px-4 py-3 rounded text-center shadow"> {{ get_flashed_messages() | join(" ") }} </div>  -->
+            <div id="toast-top-left" class="fixed flex items-center w-full max-w-xs p-4 text-body bg-blue-300 border-blue-600 rounded-xl shadow-xs border border-default top-5 start-5" role="alert">
+                <div class="text-sm font-normal">{{ get_flashed_messages() | join(" ") }}</div>
+            </div>
+        </header> 
+        {% endif %}
+
+        <main class="py-3 lg:mx-auto mx-3"> 
+            {% block main %}{% endblock %}
+        </main>
+
+        <footer>
+            <div class="flex lg:flex-row flex-col justify-around gap-8 bg-blue-200 p-10 rounded-t-xl">
+                <div class="flex-1">
+                    <h2 class="text-lg font-semibold text-black">Open Journal</h2>
+                    <p class="text-justify text-sm text-black">A trusted source for breaking news, in-depth analysis, and cultural insights.</p>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-lg font-semibold">Dashboard</h2>
+                    <ul class="">
+                        <li class="list-none"><a class="no-underline" href="/dashboard">Home</a></li>
+                        <li class="list-none"><a class="no-underline" href="/dashboard/be-author">Be an Author</a></li>
+                        <!-- <a href="/">Terms of condition</a> -->
+                    </ul>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-lg font-semibold">Company</h2>
+                    <ul class="">
+                        <li class="list-none"><a class="no-underline" href="/about">About Us</a></li>
+                        <li class="list-none"><a class="no-underline" href="/contact">Contact Us</a></li>
+                        <!-- <a href="/">Terms of condition</a> -->
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t font-bold border-blue-800 text-center text-sm text-blue-600 py-2">Open Journal. All rights reserved.</div>
+        </footer>
+        <script src="/static/scripts.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
+    </body>
+
+</html>
+
+
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+
+<section class="mb-10">
+  <div id="indicators-carousel" class="relative w-full" data-carousel="slide">
+    <div class="relative h-56 md:h-96 overflow-hidden rounded-xl">
+      {% for post in posts %}
+      <a href="/news?p={{ post.id }}" class="{% if loop.first %}block{% else %}hidden{% endif %} duration-700" data-carousel-item>
+        <img src="/static/uploads/{{ post.image }}"
+             class="absolute w-full h-full object-cover top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div class="absolute bottom-5 text-2xl left-5 bg-black/60 text-white px-4 py-2 rounded">
+          {{ post.title }}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<section class="flex flex-col lg:flex-row gap-6 mb-12">
+
+  <div class="w-full lg:w-5/7 h-full">
+    <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Featured News</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {% for news in newses %}
+      <a href="/news?p={{ news.id }}" class="rounded border border-blue-600 shadow hover:bg-blue-200">
+        <img class="w-full h-48 object-cover" src="/static/uploads/{{ news.image }}">
+        <div class="p-4">
+          <h3 class="font-bold text-lg mb-2">{{ news.title }}</h3>
+          <div class="flex flex-wrap gap-2 text-sm">
+            <span class="bg-gray-200 px-2 py-1 rounded">{{ news.category }}</span>
+            <span class="bg-gray-200 px-2 py-1 rounded"> {{ news.created_at }} </span>
+            <span class="bg-gray-200 px-2 py-1 rounded"> By @{{ news.author_name }} </span>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <aside class="w-full lg:w-2/7 text-white h-auto rounded-xl px-4">
+      <div class="w-full h-full rounded-xl hover:bg-blue-200 shadow border-1 border-blue-600 p-4 bg-white flex flex-col justify-between">
+        <div>
+            <h3 class="text-lg text-blue-500 font-bold mb-2">Sponsored</h3>
+            <img src="/static/cs50.jpg" alt="CS50" class="w-full rounded mb-4">
+            <h4 class="font-bold text-gray-800 mb-2">
+              Learn Computer Science for Free
+            </h4>
+            <p class="text-sm text-gray-600">
+              Start Harvard’s CS50 and build real-world projects step by step.
+            </p>
+        </div>
+
+        <a href="https://cs50.harvard.edu/x/" target="_blank" class="mt-4 block text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Enroll Now</a>
+    </div>
+  </aside>
+</section>
+
+
+<section class="mb-12">
+  <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Entertainment</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    {% for entertainment in entertainments %}
+    <a href="/news?p={{ entertainment.id }}" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
+      <h3 class="font-semibold mb-2">{{ entertainment.title }}</h3>
+      <p class="text-sm">{{ entertainment.content | truncate(30, True, '...') }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+<section class="mb-12">
+  <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Tech News</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    {% for tech in techs %}
+    <a href="/news?p={{ tech.id }}" class="p-4 border border-blue-600 rounded shadow hover:bg-blue-200">
+      <h3 class="font-semibold mb-2">{{ tech.title }}</h3>
+      <p class="text-sm">{{ tech.content | truncate(30, True, '...') }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+
+<section class="mb-12">
+  <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Sports News</h2>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    {% for sport in sports %}
+    <div class="flex flex-col md:flex-row border border-blue-600 rounded p-4 hover:bg-blue-200">
+      <img class="w-full md:w-48 h-24 object-cover mb-3 md:mb-0"
+           src="/static/uploads/{{ sport.image }}">
+      <div class="md:ml-4">
+        <h3 class="font-bold mb-2">{{ sport.title }}</h3>
+        <p class="text-sm mb-2">{{ sports.content | truncate(50, True, '...') }}</p>
+        <a href="/news?p={{ sport.id }}" class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+<section class="mb-12">
+  <h2 class="text-2xl font-semibold mb-4 hover:text-blue-600">Opinions</h2>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    {% for opinion in opinions %}
+    <div class="flex flex-col md:flex-row border border-blue-600 rounded p-4 hover:bg-blue-200">
+      <img class="w-full md:w-48 h-24 object-cover mb-3 md:mb-0"
+           src="/static/uploads/{{ opinion.image }}">
+      <div class="md:ml-4">
+        <h3 class="font-bold mb-2">{{ opinion.title }}</h3>
+        <p class="text-sm mb-2">{{ opinion.content | truncate(50, True, '...') }}</p>
+        <a href="/news?p={{ opinion.id }}" class="text-sm bg-blue-600 px-3 py-1 rounded">Read more</button>
+        </a>
+    </div>
+    </div>
+    {% endfor %}
+</section>
+
+
+<section>
+  <h2 class="text-2xl font-semibold mb-1 hover:text-blue-600">Latest Posts</h2>
+  <div class="py-2 grid grid-cols-1 lg:grid-cols-3 justify-start lg:items-center items-start space-x-3">
+    {% for last in lasts %}
+    <li class="mx-10"><a  class="text-blue-700" href="/news?p={{ last.id }}">{{ last.title }}</a></li>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}
+
+{% extends "layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block main %}
+    <form enctype="multipart/form-data" action="/login" method="post" class="flex justify-center items-center p-10">
+        <div class="border-2 border-blue-600 hover:border-blue-50 bg-blue-600 hover:bg-blue-700 duration-1000 transition-all rounded-2xl hover:rounded-3xl lg:w-1/2 w-full flex flex-col gap-0 justify-center items-center p-5">
+            <h2 class="text-2xl text-blue-100 font-bold pb-3 hover:text-blue-50 transition-all duration-1000">Login</h2>
+            <div class="">
+                <div class="mb-3">
+                <!-- <input required autocomplete="off" autofocus class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="name" placeholder="Full name" type="text">
+                </div> -->
+                <div class="mb-3">
+                <input required autocomplete="off" autofocus class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="username" placeholder="Username" type="text">
+                </div>
+            </div>
+            <!-- <div class="grid grid-cols-1 lg:grid-cols-2 gap-1 w-full"> -->
+            <!-- <div class="mb-3 flex justify-center items-center">
+                <input required autocomplete="off" autofocus class="form-control text-white mx-auto p-2 rounded-lg border-1 border-blue-100 file:text-smfile:text-sm file:font-semibold file:bg-blue-10 file:text-blue-100 hover:file:bg-blue-600 focus:ring-1 w-full focus:ring-blue-100 focus:border-blue-100" name="file" placeholder="Photo" type="file">
+                <!-- <input required autocomplete="off" autofocus class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-10 file:text-blue-700 hover:file:bg-blue-200" name="photo" placeholder="Photo" type="file"> -->
+            <!-- </div>  -->
+            <!-- <div class="mb-3">
+                <input required class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="email" placeholder="Email" type="email">
+            </div> -->
+            <!-- </div> -->
+            <div class="">
+            <div class="mb-3">
+                <input required class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="password" placeholder="Password" type="password">
+            </div>
+            <!-- <div class="mb-3">
+                <input required class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="confirmation" placeholder="Confirm Password" type="password"> 
+            </div> -->
+            </div>
+
+            <div class="mt-2 flex justify-center items-center w-full">
+                <input type="submit" class="form-control mx-auto w-full p-2 rounded-lg bg-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-500" value="Login">
+            </div>
+            <p class="text-white">Not registered yet? <a class="text-blue-200" href="/register">Register</></p>
+            
+
+            
+        </div>
+    </form>
+{% endblock %}
+
+
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ post.title or "No post found!" }}
+{% endblock %}
+
+{% block main %}
+
+{% if post %}
+<article>
+
+
+<nav class="flex" aria-label="Breadcrumb">
+  <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+    <li class="inline-flex items-center">
+      <a href="/" class="inline-flex items-center text-sm font-medium text-body hover:text-fg-brand">
+        <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"/></svg>
+        Home
+      </a>
+    </li>
+    <li>
+      <div class="flex items-center space-x-1.5">
+        <svg class="w-3.5 h-3.5 rtl:rotate-180 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/></svg>
+        <a href="/category/{{ post.category }}" class="inline-flex items-center text-sm font-medium text-body hover:text-fg-brand">{{ post.category }}</a>
+      </div>
+    </li>
+    <li aria-current="page">
+      <div class="flex items-center space-x-1.5">
+        <svg class="w-3.5 h-3.5 rtl:rotate-180 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/></svg>
+        <span class="inline-flex items-center text-sm font-medium text-body-subtle text-wrap">{{ post.title }}</span>
+      </div>
+    </li>
+  </ol>
+</nav>
+
+    <div class="max-w-4xl -mt-4 mx-auto px-4 pt-10">
+    <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight hover:text-blue-600">{{ post.title }}</h1>
+    <div class="flex items-center text-sm text-gray-500  mb-6">
+      <a href="/author/{{ post.user_id }}"><span class="hover:text-blue-600">By {{ post.author_name or "system" }}</span></a>
+      <span class="mx-2">•</span>
+      <span>Published at {{ post.created_at }}</span>
+    </div>
+
+    <div class="mb-8">
+      <img src="/static/uploads/{{ post.image }}" alt="News Image" class="w-full rounded-2xl shadow-md object-cover max-h-[450px]">
+    </div>
+
+    <!-- <blockquote class="border-l-4 border-blue-500 pl-4 italic text-gray-600 my-6">
+        “{{ post.quote }}”
+      </blockquote> -->
+
+    <div class="prose prose-lg max-w-none">
+      <p class="mb-4 text-lg leading-relaxed text-justify">
+        {{ post.content }}
+      </p>
+    </div>
+
+  </div>
+  <div class="flex justify-around items-center py-4">
+    <a href="/news?p={{ post.id - 1 }}" class="btn bg-blue-600 hover:bg-blue-300 py-2 px-3 rounded-lg" >Prev</a>
+    <a href="/news?p={{ post.id + 1 }}" class="btn bg-blue-600 hover:bg-blue-300 py-2 px-3 rounded-lg" >Next</a>
+  </div>
+
+</article>
+{% else %}
+<div class="flex justify-center items-center min-h-[60vh]">    
+    <div class="bg-red-100 border border-red-300 text-red-700 p-8 rounded-2xl shadow-md max-w-md w-full text-center">
+        <h1 class="text-xl font-bold mb-4">Ohh, No!</h1>
+        <p class="mb-6 text-2xl font-bold">NO POST FOUND!</p>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% extends "layout.html" %}
+
+{% block title %}
+    All News
+{% endblock %}
+
+{% block main %}
+
+<section class="max-w-6xl mx-auto px-4 pt-10">
+
+  <h1 class="text-3xl md:text-4xl font-bold mb-8 hover:text-blue-600">
+    All News
+  </h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    {% for post in posts %}
+    <a href="/post/{{ post.id }}" class="block border rounded-2xl shadow hover:shadow-lg transition overflow-hidden">
+
+      <img src="/static/uploads/{{ post.image }}" alt="News Image"
+           class="w-full h-48 object-cover">
+
+      <div class="p-4">
+        <h2 class="text-xl font-semibold mb-2 hover:text-blue-600">
+          {{ post.title }}
+        </h2>
+
+        <p class="text-gray-600 text-sm mb-2">
+          {{ post.created_at }}
+        </p>
+
+        <p class="text-gray-700 line-clamp-3">
+          {{ post.content }}
+        </p>
+      </div>
+
+    </a>
+    {% endfor %}
+    </div>
+    <div class="flex justify-between mt-10">
+
+    {% if page > 1 %}
+    <a href="/posts?page={{ page - 1 }}"
+       class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-400">
+      Prev
+    </a>
+    {% endif %}
+
+    {% if next %}
+    <a href="/posts?page={{ page + 1 }}"
+       class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-400 ml-auto">
+      Next 
+    </a>
+    {% endif %}
+
+</div>
+
+</section>
+
+{% endblock %}
+
+
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ author.name }}
+{% endblock %}
+
+{% block main %}
+
+<div class="max-w-6xl mx-auto px-4 py-10">
+    <div class="bg-white rounded-2xl shadow border border-gray-200 p-6 mb-10">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+            <img 
+                src="/static/uploads/{{ author.photo }}" 
+                class="w-28 h-28 rounded-full object-cover border-4 border-blue-200 shadow"
+            >
+            <div class="text-center md:text-left">
+                <h2 class="text-2xl font-bold text-gray-800">
+                    {{ author.name }}
+                </h2>
+                <p class="text-gray-500 text-sm mt-1">
+                    @{{ author.username }}
+                </p>
+                <span class="inline-block mt-2 px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-600">
+                    {{ author.role | capitalize }}
+                </span>
+                <p class="text-sm text-gray-600 mt-3">
+                    Sharing insights, stories, and ideas with the world.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-semibold text-blue-600">
+            Articles by {{ author.name }}
+        </h3>
+        <span class="text-sm text-gray-500">
+            {{ posts|length }} posts
+        </span>
+    </div>
+    {% if posts %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for post in posts %}
+        <a href="/news?p={{ post.id }}" 
+           class="group block bg-white rounded-2xl border border-gray-200 shadow hover:shadow-lg transition overflow-hidden">
+            <div class="overflow-hidden">
+                <img src="/static/uploads/{{ post.image }}" 
+                     class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
+            </div>
+            <div class="p-4">
+                <h4 class="font-semibold text-lg text-gray-800 group-hover:text-blue-600 transition">
+                    {{ post.title }}
+                </h4>
+                <p class="text-xs text-gray-400 mt-2">
+                    {{ post.created_at[:10] }}
+                </p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="text-center py-10 bg-white rounded-xl border">
+            <p class="text-gray-500">
+                No posts yet from this author.
+            </p>
+        </div>
+    {% endif %}
+    <div class="flex justify-around gap-4 w-full items-center mt-10">
+            {% if prev %}
+            <a href="/author/{{ author.id }}?page={{ page - 1 }}"
+               class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                Prev
+            </a>
+            {% else %}
+            <div></div>
+            {% endif %}
+        
+            <span class="text-sm text-gray-500">
+                Page {{ page }}
+            </span>
+        
+            {% if next %}
+            <a href="/author/{{ author.id }}?page={{ page + 1 }}"
+               class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                Next
+            </a>
+            {% endif %}
+        </div>
+
+</div>
+{% endblock %}
+
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    <form enctype="multipart/form-data" action="/register" method="post" class="flex justify-center items-center p-10">
+        <div class="border-2 border-blue-600 hover:border-blue-50 bg-blue-600 hover:bg-blue-700 duration-1000 transition-all rounded-2xl hover:rounded-3xl lg:w-1/2 w-full flex flex-col gap-0 justify-center items-center p-5">
+            <h2 class="text-2xl text-blue-100 font-bold pb-3 hover:text-blue-50 transition-all duration-1000">Registration</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-1 w-full">
+                <div class="mb-3">
+                <input required autocomplete="off" autofocus class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="name" placeholder="Full name" type="text">
+                </div>
+                <div class="mb-3">
+                <input required autocomplete="off" autofocus class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="username" placeholder="Username" type="text">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-1 w-full">
+            <div class="mb-3 flex justify-center items-center">
+                <input required autocomplete="off" autofocus class="form-control text-white mx-auto p-2 rounded-lg border-1 border-blue-100 file:text-smfile:text-sm file:font-semibold file:bg-blue-10 file:text-blue-100 hover:file:bg-blue-600 focus:ring-1 w-full focus:ring-blue-100 focus:border-blue-100" name="photo" placeholder="Photo" type="file">
+                <!-- <input required autocomplete="off" autofocus class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-10 file:text-blue-700 hover:file:bg-blue-200" name="photo" placeholder="Photo" type="file"> -->
+            </div>
+            <div class="mb-3">
+                <input required class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="email" placeholder="Email" type="email">
+            </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-1 w-full">
+            <div class="mb-3">
+                <input required class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="password" placeholder="Password" type="password">
+            </div>
+            <div class="mb-3">
+                <input required class="form-control text-white mx-auto w-full p-2 rounded-lg border-1 border-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-100 focus:border-blue-100" name="confirmation" placeholder="Confirm Password" type="password"> 
+            </div>
+            </div>
+
+            <div class="-mt-1.5 flex justify-center items-center w-full">
+                <input type="submit" class="form-control mx-auto w-full p-2 rounded-lg bg-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-500" value="Register">
+            </div>
+            <p class="text-white">Already registered? <a class="text-blue-200" href="/login">Login</></p>
+            
+        </div>
+    </form>
+{% endblock %}
+
+{% extends "layout.html" %}
+
+{% block title %}
+    CAT:{{ name }} News
+{% endblock %}
+
+{% block main %}
+
+<section class="max-w-6xl mx-auto px-4 pt-10">
+
+  <h1 class="text-3xl md:text-4xl font-bold mb-8 hover:text-blue-600">
+    CAT: {{ name }}
+  </h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    {% for post in posts %}
+    <a href="/post/{{ post.id }}" class="block border rounded-2xl shadow hover:shadow-lg transition overflow-hidden">
+
+      <img src="/static/uploads/{{ post.image }}" alt="News Image"
+           class="w-full h-48 object-cover">
+
+      <div class="p-4">
+        <h2 class="text-xl font-semibold mb-2 hover:text-blue-600">
+          {{ post.title }}
+        </h2>
+
+        <p class="text-gray-600 text-sm mb-2">
+          {{ post.created_at }}
+        </p>
+
+        <p class="text-gray-700 line-clamp-3">
+          {{ post.content }}
+        </p>
+      </div>
+
+    </a>
+    {% endfor %}
+    </div>
+    <div class="flex justify-between mt-10">
+
+    {% if page > 1 %}
+    <a href="/category/{{ name }}?page={{ page - 1 }}"
+       class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-400">
+      Prev
+    </a>
+    {% endif %}
+
+    {% if next %}
+    <a href="/category/{{ name }}?page={{ page + 1 }}"
+       class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-400 ml-auto">
+      Next 
+    </a>
+    {% endif %}
+
+</div>
+
+</section>
+
+{% endblock %}
+
+{% extends "layout.html" %}
+
+{% block title %}
+    Contact Us
+{% endblock %}
+
+{% block main %}
+
+<article>
+
+  <div class="max-w-4xl -mt-4 mx-auto px-4 pt-10">
+
+    <div class="mb-8">
+      <img src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" alt="Contact Open Journal" class="w-full rounded-2xl shadow-md object-cover max-h-[450px]">
+    </div>
+
+    <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight hover:text-blue-600">
+      Contact Us
+    </h1>
+
+    <blockquote class="border-l-4 border-blue-500 pl-4 italic text-gray-600 my-6">
+      “We’d love to hear from you — questions, feedback, or collaboration ideas.”
+    </blockquote>
+
+    <p class="mb-4 text-lg leading-relaxed">
+      Whether you’re a reader, writer, or collaborator, Open Journal is always open to conversation. 
+      If you have feedback, suggestions, or inquiries, feel free to reach out.
+    </p>
+
+    <p class="mb-4 text-lg leading-relaxed">
+    <strong>Email:</strong> 
+      <a href="mailto:parvejsunamganj@gmail.com" class="text-blue-600 hover:underline">
+        parvejsunamganj@gmail.com
+      </a>
+    </p>
+
+    <p class="mb-4 text-lg leading-relaxed">
+    <strong>GitHub:</strong> 
+      <a href="https://github.com/parvejtalukder" target="_blank" class="text-blue-600 hover:underline">
+        @parvejtalukder
+      </a>
+    </p>
+
+    <p class="mb-4 text-lg leading-relaxed">
+      We aim to respond as soon as possible. Thank you for being part of Open Journal.
+    </p>
+
+  </div>
+
+</article>
+
+{% endblock %}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width">
+        <!-- tailwindCss -->
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <!-- https://favicon.io/emoji-favicons/money-bag/ -->
+        <link href="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" rel="icon">
+        <link href="/static/styles.css" rel="stylesheet">
+        <title>{% block title %}{% endblock %} | Open Journal Dashboard</title>
+
+    </head>
+
+    <body class="max-w-6xl mx-auto transition-all duration-500">
+    <header class="sticky z-50 top-2">    
+      {% if get_flashed_messages() %}
+      <div class="fixed z-50 bottom-4 right-4 left-1/2 transform -translate-x-1/2 md:left-auto md:translate-x-0">
+          <div class="bg-blue-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm animate-fade-in">
+              {{ get_flashed_messages() | join(" ") }}
+          </div>
+      </div>
+      {% endif %}
+        <main class="py-3 lg:mx-auto mx-3"> 
+            <div class="antialiased bg-gray-50 ">
+                <nav class="bg-white border-b border-blue-600 px-4 py-2.5 fixed left-0 right-0 top-0 z-50">
+                  <div class="flex flex-wrap justify-between items-center">
+                    <div class="flex justify-start items-center">
+                      <button
+                        data-drawer-target="drawer-navigation"
+                        data-drawer-toggle="drawer-navigation"
+                        aria-controls="drawer-navigation"
+                        class="p-2 mr-2 text-blue-600 rounded-lg cursor-pointer md:hidden hover:text-blue-600 hover:bg-blue-400 focus:bg-blue-600 focus:ring-2 focus:ring-blue-600"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="w-6 h-6"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                            clip-rule="evenodd"
+                          ></path>
+                        </svg>
+                        <svg
+                          aria-hidden="true"
+                          class="hidden w-6 h-6"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"
+                          ></path>
+                        </svg>
+                        <span class="sr-only">Toggle sidebar</span>
+                      </button>
+                      <a href="/" class="flex items-center justify-between mr-4">
+                        <span class="self-center lg:text-2xl text-xl font-semibold whitespace-nowrap text-blue-600">Open Journal</span>
+                      </a>
+                      <!-- <form action="#" method="GET" class="hidden md:block md:pl-2">
+                        <label for="topbar-search" class="sr-only">Search</label>
+                        <div class="relative md:w-64 md:w-96">
+                          <div
+                            class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none"
+                          >
+                            <svg
+                              class="w-5 h-5 text-blue-600"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                              ></path>
+                            </svg>
+                          </div>
+
+                        </div>
+                      </form> -->
+                    </div>
+                    <div class="flex items-center lg:order-2">
+                      <!-- <button
+                        type="button"
+                        data-drawer-toggle="drawer-navigation"
+                        aria-controls="drawer-navigation"
+                        class="p-2 mr-1 text-white rounded-lg md:hidden hover:text-blue-300 hover:bg-blue-600 focus:ring-4 focus:ring-blue-600 "
+                      >
+                        <span class="sr-only">Toggle search</span>
+                        <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                          <path clip-rule="evenodd" fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"></path>
+                        </svg>
+                      </button> -->
+                      <button
+                        type="button"
+                        class="flex mx-3 text-sm bg-blue-600 rounded-full md:mr-0 focus:ring-2 focus:ring-blue-600"
+                        id="user-menu-button"
+                        aria-expanded="false"
+                        data-dropdown-toggle="dropdown"
+                      >
+                        <span class="sr-only">Open user menu</span>
+                        <img
+                          class="w-8 h-8 rounded-full"
+                          src="/static/uploads/{{ user.photo }}"
+                          alt="user photo"
+                        />
+                      </button>
+                      <!-- Dropdown menu -->
+                      <div
+                        class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-blue-600 shadow  rounded-xl"
+                        id="dropdown"
+                      >
+                        <div class="py-3 px-4">
+                          <span
+                            class="block text-sm font-semibold text-blue-600 "
+                            >{{ user.name }}</span
+                          >
+                          <span
+                            class="block text-sm font-semibold text-blue-400 "
+                            >{{ user.email }}</span
+                          >
+                        </div>
+                        <ul
+                          class="py-1 text-blue-600"
+                          aria-labelledby="dropdown"
+                        >
+                          <li>
+                            <a
+                              href="/dashboard/profile"
+                              class="block py-2 px-4 text-sm hover:bg-blue-200 "
+                              >My profile</a
+                            >
+                          </li>
+
+                        </ul>
+                        <ul
+                          class="py-1 text-blue-600 "
+                          aria-labelledby="dropdown"
+                        >
+                          <li>
+                            <a
+                              href="/logout"
+                              class="block py-2 px-4 text-sm hover:bg-blue-500 "
+                              >Log out</a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </nav>
+                    <aside
+      class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-blue-600 md:translate-x-0 "
+      aria-label="Sidenav"
+      id="drawer-navigation"
+    >
+      <div class="overflow-y-auto py-5 px-3 h-full bg-white ">
+        
+        <ul class="space-y-2">
+            <li>
+            <a
+              href="/dashboard"
+              class="flex items-center p-2 text-base font-medium text-blue-600 rounded-lg  group"
+            >
+              <svg class="w-6 h-6 text-blue-600 transition duration-75" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M11.293 3.293a1 1 0 0 1 1.414 0l6 6 2 2a1 1 0 0 1-1.414 1.414L19 12.414V19a2 2 0 0 1-2 2h-3a1 1 0 0 1-1-1v-3h-2v3a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2v-6.586l-.293.293a1 1 0 0 1-1.414-1.414l2-2 6-6Z" clip-rule="evenodd"/>
+                </svg>
+              <span class="ml-3">Home</span>
+            </a>
+          </li>
+          {% if user.role == "admin" %}
+          <li>
+            <a
+              href="/dashboard/overview"
+              class="flex items-center p-2 text-base font-medium text-blue-600 rounded-lg  group"
+            >
+              <svg
+                aria-hidden="true"
+                class="w-6 h-6 text-blue-600 transition duration-75 "
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+              </svg>
+              <span class="ml-3">Overview</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="/dashboard/users"
+              class="flex items-center p-2 text-base font-medium text-blue-600 rounded-lg  group"
+            >
+              <svg class="w-6 h-6 text-blue-600 transition duration-75" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+  <path fill-rule="evenodd" d="M8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H6Zm7.25-2.095c.478-.86.75-1.85.75-2.905a5.973 5.973 0 0 0-.75-2.906 4 4 0 1 1 0 5.811ZM15.466 20c.34-.588.535-1.271.535-2v-1a5.978 5.978 0 0 0-1.528-4H18a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2h-4.535Z" clip-rule="evenodd"/>
+</svg>
+
+              <span class="ml-3">Users</span>
+            </a>
+          </li>
+          {% endif %}
+          
+          {% if user.role == "author" or user.role == "admin" %}
+          <li>
+            <button
+              type="button"
+              class="flex items-center p-2 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-200"
+              aria-controls="dropdown-pages"
+              data-collapse-toggle="dropdown-pages"
+            >
+              <svg
+                aria-hidden="true"
+                class="flex-shrink-0 w-6 h-6 text-blue-600 transition duration-75 group-hover:text-blue-600 "
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+              <span class="flex-1 ml-3 text-left whitespace-nowrap"
+                >Control</span
+              >
+              <svg
+                aria-hidden="true"
+                class="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </button>
+            <ul id="dropdown-pages" class="hidden py-2 space-y-2">
+            {% if user.role == "author" or user.role == "admin" %}
+              <li>
+                <a
+                  href="/dashboard/posts"
+                  class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-400"
+                  >Posts</a
+                >
+              </li>
+              {% endif %}
+              {% if user.role == "admin" %}
+              <li>
+                <a
+                  href="/dashboard/my-posts"
+                  class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-400"
+                  >My Posts</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/dashboard/applications"
+                  class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-400"
+                  >Applications</a
+                >
+              </li>
+              {% endif %}
+            </ul>
+          </li>
+          {% endif %}
+          {% if user.role == "reader" %}
+          <li>
+            <button
+              type="button"
+              class="flex items-center p-2 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-400"
+              aria-controls="dropdown-sales"
+              data-collapse-toggle="dropdown-sales"
+            >
+              <svg class="flex-shrink-0 w-6 h-6 text-blue-600 transition duration-75 group-hover:text-blue-600 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+  <path fill-rule="evenodd" d="M11.403 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6.403a3.01 3.01 0 0 1-1.743-1.612l-3.025 3.025A3 3 0 1 1 9.99 9.768l3.025-3.025A3.01 3.01 0 0 1 11.403 5Z" clip-rule="evenodd"/>
+  <path fill-rule="evenodd" d="M13.232 4a1 1 0 0 1 1-1H20a1 1 0 0 1 1 1v5.768a1 1 0 1 1-2 0V6.414l-6.182 6.182a1 1 0 0 1-1.414-1.414L17.586 5h-3.354a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+</svg>
+
+              <span class="flex-1 ml-3 text-left whitespace-nowrap"
+                >Application</span
+              >
+              <svg
+                aria-hidden="true"
+                class="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </button>
+            <ul id="dropdown-sales" class="hidden py-2 space-y-2">
+              <li>
+                <a
+                  href="/dashboard/be-author"
+                  class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-400"
+                  >Be an author</a
+                >
+              </li>
+            </ul>
+          </li>
+          {% endif %}
+          <li>
+            <button
+              type="button"
+              class="flex items-center p-2 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-400"
+              aria-controls="dropdown-authentication"
+              data-collapse-toggle="dropdown-authentication"
+            >
+              <svg
+                aria-hidden="true"
+                class="flex-shrink-0 w-6 h-6 text-blue-600 transition duration-75 group-hover:text-blue-600 "
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+              <span class="flex-1 ml-3 text-left whitespace-nowrap"
+                >Authentication</span
+              >
+              <svg
+                aria-hidden="true"
+                class="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </button>
+            <ul id="dropdown-authentication" class="hidden py-2 space-y-2">
+              <li>
+                <a
+                  href="/dashboard/reset-password"
+                  class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-400"
+                  >Reset Password</a
+                >
+              </li>
+            </ul>
+          </li>
+          <li>
+            <button
+              type="button"
+              class="flex items-center p-2 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-400"
+              aria-controls="dropdown-feedback"
+              data-collapse-toggle="dropdown-feedback"
+            >
+              <svg class="flex-shrink-0 w-6 h-6 text-blue-600 transition duration-75 group-hover:text-blue-600 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z" clip-rule="evenodd"/>
+              </svg>
+              <span class="flex-1 ml-3 text-left whitespace-nowrap"
+                >Opinion</span
+              >
+              <svg
+                aria-hidden="true"
+                class="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </button>
+            <ul id="dropdown-feedback" class="hidden py-2 space-y-2">
+              <li>
+                <a
+                  href="/dashboard/feedback"
+                  class="flex items-center p-2 pl-11 w-full text-base font-medium text-blue-600 rounded-lg transition duration-75 group hover:bg-blue-400"
+                  >Send feedback</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+        
+      </div>
+    </aside>
+            </div>
+            <section class="lg:ml-64 pt-20 px-4">
+                {% block main %} {% endblock %}
+            </section>
+        </main>
+
+        <script src="/static/scripts.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
+    </body>
+
+</html>
+
+{% extends "layout.html" %}
+
+{% block title %}
+    Error
+{% endblock %}
+
+{% block main %}
+<div class="flex justify-center items-center min-h-[60vh]">    
+    <div class="bg-red-100 border border-red-300 text-red-700 p-8 rounded-2xl shadow-md max-w-md w-full text-center">
+        <h1 class="text-xl font-bold mb-4">Ohh, No!</h1>
+        <p class="mb-6 text-2xl font-bold">
+            {{ bottom }}
+        </p>
+    </div>
+
+</div>
+{% endblock %}
+
+{% extends "dashboard.html" %}
+
+{% block title %}
+    {{ user.name }}
+{% endblock %}
+
+{% block main %}
+<div class="w-full flex flex-col gap-4">    
+
+    <h2 class="text-xl flex justify-center items-center gap-3">
+        Hello {{ user.name }}
+        <span class="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-600">
+            Admin
+        </span>
+    </h2>
+
+    {% if show_cards %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+
+        <div class="rounded-xl shadow border border-blue-600 p-3 bg-white flex flex-col justify-between hover:bg-blue-50 transition">
+            <div>
+                <h3 class="text-sm text-blue-500 font-semibold mb-2">Profile</h3>
+
+                <img 
+                    src="{{ url_for('static', filename='uploads/' + user.photo) }}" 
+                    alt="Profile"
+                    class="w-full h-28 object-cover rounded mb-2"
+                >
+
+                <h4 class="text-sm font-semibold text-gray-800">
+                    {{ user.name }}
+                </h4>
+
+                <p class="text-xs text-gray-600">
+                    {{ user.email }}
+                </p>
+
+                <p class="text-xs text-gray-400">
+                    @{{ user.username }}
+                </p>
+            </div>
+
+            <a href="#" class="mt-3 text-center bg-blue-600 text-white text-xs py-1.5 rounded-lg hover:bg-blue-700 transition">
+                Edit Profile
+            </a>
+        </div>
+
+        <div class="rounded-xl shadow border border-blue-600 p-3 bg-white flex flex-col justify-between hover:bg-blue-50 transition">
+            <div>
+                <h3 class="text-sm text-blue-500 font-semibold mb-2">Sponsored</h3>
+
+                <img 
+                    src="{{ url_for('static', filename='cs50.jpg') }}" 
+                    alt="CS50"
+                    class="w-full h-28 object-cover rounded mb-2"
+                >
+
+                <h4 class="text-sm font-semibold text-gray-800">
+                    Learn Computer Science for Free
+                </h4>
+
+                <p class="text-xs text-gray-600">
+                    Start Harvard’s CS50 and build real-world projects.
+                </p>
+            </div>
+
+            <a href="https://cs50.harvard.edu/x/" target="_blank"
+               class="mt-3 text-center bg-blue-600 text-white text-xs py-1.5 rounded-lg hover:bg-blue-700 transition">
+                Enroll
+            </a>
+        </div>
+
+    </div>
+    {% endif %}
+
+    {% block section %}{% endblock %}
+
+</div>
+{% endblock %}
+
+{% extends "dashboard.html" %}
+
+{% block title %}
+    {{ user.name }}
+{% endblock %}
+
+{% block main %}
+<div class="w-full flex flex-col gap-4">    
+
+    <h2 class="text-xl flex justify-center items-center gap-3">
+        Hello {{ user.name }}
+        <span class="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-600">
+            Author
+        </span>
+    </h2>
+
+    {% if show_cards %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+
+        <div class="rounded-xl shadow border border-blue-600 p-3 bg-white flex flex-col justify-between hover:bg-blue-50 transition">
+            <div>
+                <h3 class="text-sm text-blue-500 font-semibold mb-2">Profile</h3>
+
+                <img 
+                    src="{{ url_for('static', filename='uploads/' + user.photo) }}" 
+                    alt="Profile"
+                    class="w-full h-28 object-cover rounded mb-2"
+                >
+
+                <h4 class="text-sm font-semibold text-gray-800">
+                    {{ user.name }}
+                </h4>
+
+                <p class="text-xs text-gray-600">
+                    {{ user.email }}
+                </p>
+
+                <p class="text-xs text-gray-400">
+                    @{{ user.username }}
+                </p>
+            </div>
+
+            <a href="/dashboard/profile" class="mt-3 text-center bg-blue-600 text-white text-xs py-1.5 rounded-lg hover:bg-blue-700 transition">
+                Edit Profile
+            </a>
+        </div>
+
+        <div class="rounded-xl shadow border border-blue-600 p-3 bg-white flex flex-col justify-between hover:bg-blue-50 transition">
+            <div>
+                <h3 class="text-sm text-blue-500 font-semibold mb-2">Sponsored</h3>
+
+                <img 
+                    src="{{ url_for('static', filename='cs50.jpg') }}" 
+                    alt="CS50"
+                    class="w-full h-28 object-cover rounded mb-2"
+                >
+
+                <h4 class="text-sm font-semibold text-gray-800">
+                    Learn Computer Science for Free
+                </h4>
+
+                <p class="text-xs text-gray-600">
+                    Start Harvard’s CS50 and build real-world projects.
+                </p>
+            </div>
+
+            <a href="https://cs50.harvard.edu/x/" target="_blank"
+               class="mt-3 text-center bg-blue-600 text-white text-xs py-1.5 rounded-lg hover:bg-blue-700 transition">
+                Enroll
+            </a>
+        </div>
+
+    </div>
+    {% endif %}
+
+    {% block section %}{% endblock %}
+
+</div>
+{% endblock %}
+
+{% extends "dashboard.html" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block main %}
+<div class="w-full flex justify-center items-center lg:py-4">
+    <div class="w-full lg:w-2/3 bg-white border border-blue-200 rounded-2xl shadow p-6">
+        <div class="flex flex-col items-center text-center mb-6">
+            <img 
+                src="{{ url_for('static', filename='uploads/' + user.photo) }}" 
+                alt="Profile"
+                class="w-28 h-28 rounded-full object-cover border-4 border-blue-200 shadow mb-3"
+            >
+
+            <h2 class="text-xl font-semibold text-blue-600">
+                {{ user.name }}
+            </h2>
+
+            <p class="text-sm text-gray-500">@{{ user.username }}</p>
+
+            <span class="mt-2 px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-600">
+                {{ user.role | capitalize }}
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <div class="p-4 border rounded-xl bg-gray-50">
+                <p class="text-xs text-gray-500">Full Name</p>
+                <p class="text-sm font-medium text-gray-800">{{ user.name }}</p>
+            </div>
+
+            <div class="p-4 border rounded-xl bg-gray-50">
+                <p class="text-xs text-gray-500">Username</p>
+                <p class="text-sm font-medium text-gray-800">@{{ user.username }}</p>
+            </div>
+
+            <div class="p-4 border rounded-xl bg-gray-50">
+                <p class="text-xs text-gray-500">Email</p>
+                <p class="text-sm font-medium text-gray-800">{{ user.email }}</p>
+            </div>
+
+            <div class="p-4 border rounded-xl bg-gray-50">
+                <p class="text-xs text-gray-500">Role</p>
+                <p class="text-sm font-medium text-gray-800">{{ user.role }}</p>
+            </div>
+
+        </div>
+
+        <div class="mt-6 flex justify-center gap-3 w-full">
+            <a href="/dashboard/reset-password"
+               class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                Change Password
+            </a>
+
+            
+        </div>
+        
+
+    </div>
+</div>
+{% endblock %}
+
+{% extends "dashboard.html" %}
+
+{% block title %}
+    {{ user.name }}
+{% endblock %}
+
+{% block main %}
+<div class="w-full flex flex-col gap-4">    
+
+    <h2 class="text-xl flex justify-center items-center gap-3">
+        Hello {{ user.name }}
+        <span class="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-600">
+            Reader
+        </span>
+    </h2>
+
+    {% if show_cards %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+
+        <div class="rounded-xl shadow border border-blue-600 p-3 bg-white flex flex-col justify-between hover:bg-blue-50 transition">
+            <div>
+                <h3 class="text-sm text-blue-500 font-semibold mb-2">Profile</h3>
+
+                <img 
+                    src="{{ url_for('static', filename='uploads/' + user.photo) }}" 
+                    alt="Profile"
+                    class="w-full h-28 object-cover rounded mb-2"
+                >
+
+                <h4 class="text-sm font-semibold text-gray-800">
+                    {{ user.name }}
+                </h4>
+
+                <p class="text-xs text-gray-600">
+                    {{ user.email }}
+                </p>
+
+                <p class="text-xs text-gray-400">
+                    @{{ user.username }}
+                </p>
+            </div>
+
+            <a href="#" class="mt-3 text-center bg-blue-600 text-white text-xs py-1.5 rounded-lg hover:bg-blue-700 transition">
+                Edit Profile
+            </a>
+        </div>
+
+        <div class="rounded-xl shadow border border-blue-600 p-3 bg-white flex flex-col justify-between hover:bg-blue-50 transition">
+            <div>
+                <h3 class="text-sm text-blue-500 font-semibold mb-2">Sponsored</h3>
+
+                <img 
+                    src="{{ url_for('static', filename='cs50.jpg') }}" 
+                    alt="CS50"
+                    class="w-full h-28 object-cover rounded mb-2"
+                >
+
+                <h4 class="text-sm font-semibold text-gray-800">
+                    Learn Computer Science for Free
+                </h4>
+
+                <p class="text-xs text-gray-600">
+                    Start Harvard’s CS50 and build real-world projects.
+                </p>
+            </div>
+
+            <a href="https://cs50.harvard.edu/x/" target="_blank"
+               class="mt-3 text-center bg-blue-600 text-white text-xs py-1.5 rounded-lg hover:bg-blue-700 transition">
+                Enroll
+            </a>
+        </div>
+
+    </div>
+    {% endif %}
+
+    {% block section %}{% endblock %}
+
+</div>
+{% endblock %}
+
+{% extends "dashboard.html" %}
+
+{% block title %}
+    Reset Password
+{% endblock %}
+
+{% block main %}
+<div class="w-full flex justify-center items-center lg:pt-15">
+    <div class="w-full lg:w-1/2 bg-white border border-blue-200 rounded-2xl shadow p-6">
+        <h2 class="text-xl font-semibold text-blue-600 mb-4">Reset Password</h2>
+        <form action="/dashboard/reset-password" method="post" class="flex flex-col gap-4">
+            <div>
+                <label class="text-sm text-blue-600">Username</label>
+                <input name="username" value="{{ user.username }}" disabled required type="text"
+                    class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter username">
+            </div>
+            <div>
+                <label class="text-sm text-blue-600">New Password</label>
+                <input name="password" required type="password"
+                    class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter new password">
+            </div>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition font-medium">
+                Update Password
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+
+{% extends "dashboard.html" %}
+
+{% block title %}
+    Feedback
+{% endblock %}
+
+{% block main %}
+<div class="w-full flex flex-col gap-6">
+
+    <div class="w-full lg:w-1/2 mx-auto bg-white border border-blue-200 rounded-2xl shadow p-6">
+        <h2 class="text-xl font-semibold text-blue-600 mb-4">
+            Send Feedback
+        </h2>
+
+        <form action="/dashboard/feedback" method="post" class="flex flex-col gap-4">
+
+            <div>
+                <label class="text-sm text-blue-600">Subject (optional)</label>
+                <input name="subject" type="text"
+                    class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter subject">
+            </div>
+
+            <div>
+                <label class="text-sm text-blue-600">Message</label>
+                <textarea name="message" required rows="5"
+                    class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Write your feedback here..."></textarea>
+            </div>
+
+            <button type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition font-medium">
+                Send Feedback
+            </button>
+
+        </form>
+    </div>
+
+</div>
+{% endblock %}
+
+{% extends "dashboard/admin.html" %}
+
+{% block title %}
+    Pending applications 
+{% endblock %} user
+
+{% block main %}
+<div class="w-full h-full space-y-4"> 
+    <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-semibold">
+            All pending applications ({{ applications_count }})
+        </h2>
+    </div>
+    <div class="overflow-x-auto bg-white shadow rounded-xl border border-gray-200">
+        <table class="w-full text-sm text-left">
+            <thead class="bg-gray-100 border-b">
+                <tr>
+                    <th class="px-6 py-3 font-semibold">ID</th>
+                    <th class="px-6 py-3 font-semibold">User</th>
+                    <th class="px-6 py-3 font-semibold">Message</th>
+                    <th class="px-6 py-3 font-semibold">Date</th>
+                    <th class="px-6 py-3 font-semibold text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if applications %}
+                    {% for application in applications %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-6 py-4 font-medium text-gray-800">
+                            {{ application.id }}
+                        </td>
+                        <td class="px-6 py-4 text-blue-600">
+                            {{ application.username }}
+                        </td>
+                        <td class="px-6 py-4 text-blue-600">
+                            {{ application.message }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-500">
+                            {{ application.created_at[:10] }}
+                        </td>
+                        <td class="px-6 flex justify-between items-center py-4 gap-2 text-right">
+                            <!-- <td class="px-6 py-4 text-right"> -->
+                                <button 
+                                    data-modal-target="modal-{{ application.id }}" 
+                                    data-modal-toggle="modal-{{ application.id }}"
+                                    class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                                    Review
+                                </button>
+                            <!-- </td> -->
+                        </td>
+                        <div id="modal-{{ application.id }}" tabindex="-1" aria-hidden="true"
+                             class="hidden fixed inset-0 z-50 flex justify-center items-center bg-white/96">
+                            <div class="bg-white w-full max-w-lg rounded-2xl shadow-lg p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-lg font-semibold text-gray-800">Review Application</h3>
+                                    <button data-modal-hide="modal-{{ application.id }}" class="text-blue-600 hover:text-blue-800">✕</button>
+                                </div>
+                                <div class="space-y-3">
+                                    <p class="text-sm text-blue-600">
+                                        <span class="font-medium text-blue-800">User:</span>
+                                        {{ application.username }}
+                                    </p>
+                                    <p class="text-sm text-blue-600">
+                                        <span class="font-medium text-blue-800">Message:</span><br>
+                                        {{ application.message }}
+                                    </p>
+                                </div>
+                                <div class="flex justify-end gap-3 mt-6">
+                                    <form action="/dashboard/applications/edit/{{ application.id }}" method="post">
+                                        <input type="hidden" name="status" value="rejected">
+                                        <button type="submit"
+                                            class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">
+                                            Reject
+                                        </button>
+                                    </form>
+                                    <form action="/dashboard/applications/edit/{{ application.id }}" method="post">
+                                        <input type="hidden" name="status" value="approved">
+                                        <button type="submit"
+                                            class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700">
+                                            Accept
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-6 text-blue-600">
+                            No pending applications found.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <script src="https://unpkg.com/flowbite@latest/dist/flowbite.min.js"></script>
+</div>
+{% endblock %}
+
+{% extends "dashboard/admin.html" %}
+
+{% block title %}
+     Overview 
+{% endblock %}
+
+{% block section %}
+<section class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">    
+
+    <div class="bg-white border border-blue-600 rounded-2xl p-5 shadow-sm hover:shadow-md transition">
+        <h2 class="text-lg font-semibold text-gray-700 mb-3">Total Users ({{user_count}})</h2>
+
+        <ul class="space-y-1 text-sm">
+            <li class="flex justify-between">
+                <span class="text-gray-500">Admins</span>
+                <span class="font-semibold text-blue-600">{{ admin_count or 0 }}</span>
+            </li>
+            <li class="flex justify-between">
+                <span class="text-gray-500">Authors</span>
+                <span class="font-semibold text-blue-600"> {{ author_count or 0}} </span>
+            </li>
+            <li class="flex justify-between">
+                <span class="text-gray-500">Readers</span>
+                <span class="font-semibold text-blue-600"> {{ reader_count or 0 }} </span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="bg-white border border-blue-600 rounded-2xl p-5 shadow-sm hover:shadow-md transition">
+        <h2 class="text-lg font-semibold text-gray-700 mb-3">Total Posts ({{posts_count}})</h2>
+
+        <ul class="space-y-1 text-sm">
+            <li class="flex justify-between">
+                <span class="text-gray-500">Active</span>
+                <span class="font-semibold text-green-600">{{ posts_count or 0 }}</span>
+            </li>
+            <li class="flex justify-between">
+                <span class="text-gray-500">Pending</span>
+                <span class="font-semibold text-yellow-500"> 0 </span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="bg-white border border-blue-600 rounded-2xl p-5 shadow-sm hover:shadow-md transition">
+        <h2 class="text-lg font-semibold text-gray-700 mb-3">Other Stats</h2>
+
+        <ul class="space-y-1 text-sm">
+            <li class="flex justify-between">
+                <span class="text-gray-500">Applications</span>
+                <span class="font-semibold text-blue-600"> {{ appli_count or 0 }}</span>
+            </li>
+            <li class="flex justify-between">
+                <span class="text-gray-500">Feedbacks</span>
+                <span class="font-semibold text-blue-600"> {{ feedback_count or 0 }} </span>
+            </li>
+        </ul>
+    </div>
+    
+    
+
+</section>
+<div class="mt-8 bg-white border border-blue-600 rounded-2xl shadow p-5">
+    <h2 class="text-lg font-semibold text-gray-700 mb-4">
+        Recent Feedback
+    </h2>
+
+    {% if feedbacks %}
+    <div class="gap-3 grid lg:grid-cols-3 grid-cols-1">
+        {% for fb in feedbacks %}
+        <div class="p-3 border rounded-xl bg-gray-50">
+            
+            <div class="flex justify-between items-center mb-1">
+                <span class="text-sm font-semibold text-blue-600">
+                    @{{ fb.username }}
+                </span>
+                <span class="text-xs text-gray-400">
+                    {{ fb.created_at[:10] }}
+                </span>
+            </div>
+
+            {% if fb.subject %}
+            <p class="text-sm font-medium text-gray-700">
+                {{ fb.subject }}
+            </p>
+            {% endif %}
+
+            <p class="text-sm text-gray-600 mt-1">
+                {{ fb.message }}
+            </p>
+
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p class="text-gray-500 text-sm">No feedback yet.</p>
+    {% endif %}
+</div>
+<div class="flex justify-between items-center mt-6">
+    
+    {% if fb_prev %}
+    <a href="{{ url_for('/dashboard/overview', fb_page=fb_page-1) }}"
+       class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+        Prev
+    </a>
+    {% else %}
+    <div></div>
+    {% endif %}
+
+    <span class="text-sm text-gray-500">
+        Page {{ fb_page }}
+    </span>
+
+    {% if fb_next %}
+    <a href="{{ url_for('/dashboard/overview', fb_page=fb_page+1) }}"
+       class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+        Next
+    </a>
+    {% endif %}
+
+</div>
+
+
+{% endblock %}
+
+{% extends "dashboard.html" %}
+
+{% block title %}
+    Users
+{% endblock %}
+
+{% block main %}
+<div class="w-full h-full space-y-4"> 
+
+    <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-semibold">
+            All Users ({{ users_count }})
+        </h2>
+    </div>
+
+    <div class="overflow-x-auto bg-white shadow rounded-xl border border-gray-200">
+        <table class="w-full text-sm text-left">
+            <thead class="bg-gray-100 border-b">
+                <tr>
+                    <th class="px-6 py-3 font-semibold">Name</th>
+                    <th class="px-6 py-3 font-semibold">Username</th>
+                    <th class="px-6 py-3 font-semibold">Email</th>
+                    <th class="px-6 py-3 font-semibold">Role</th>
+                    <th class="px-6 py-3 font-semibold">Joined</th>
+                    <th class="px-6 py-3 font-semibold text-right">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% if users %}
+                    {% for user_item in users %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-6 py-4 font-medium text-gray-800">
+                            {{ user_item.name }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-600">
+                            @{{ user_item.username }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-600">
+                            {{ user_item.email }} 
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-600">
+                                {{ user_item.role }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-500">
+                            {{ user_item.created_at[:10] }}
+                        </td>
+                        <td class="px-6 py-4 text-right flex gap-2 justify-end">
+                            <a href="/author/{{ user_item.id }}"
+                               class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
+                                View
+                            </a>
+                            <!-- <button data-modal-target="edit-modal-{{ user_item.id }}" data-modal-toggle="edit-modal-{{ user_item.id }}" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">Edit</button> -->
+                            <button data-modal-target="delete-modal-{{ user_item.id }}" data-modal-toggle="delete-modal-{{ user_item.id }}" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm">Delete</button>
+                        </td>
+                    </tr>
+                    <div id="delete-modal-{{ user_item.id }}" tabindex="-1" aria-hidden="true"
+                         class="hidden fixed inset-0 z-50 flex justify-center items-center bg-white/90">
+
+                        <div class="bg-white w-full max-w-md rounded-2xl shadow-lg p-6">
+                        
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Confirm Delete</h3>
+                        
+                            {% if user.role == "reader" %}
+                            <p class="text-sm text-gray-600">
+                                Are you sure you want to delete <strong>{{ user_item.username }}</strong>?
+                            </p>
+                            {% else %}
+                            <p class="text-sm text-gray-600">
+                                Not recommonded to delete author <strong>{{ user_item.username }}</strong>?
+                            </p>
+                            {% endif %}
+                        
+                            <div class="flex justify-end gap-3 mt-6">
+                                <button type="button" data-modal-hide="delete-modal-{{ user_item.id }}"
+                                    class="px-4 py-2 rounded-lg bg-gray-200">
+                                    Cancel
+                                </button>
+                            {% if user.role == "reader" %}
+                                <form action="/dashboard/user/delete/{{ user_item.id }}" method="POST">
+                                    <button type="submit"
+                                        class="px-4 py-2 rounded-lg bg-red-600 text-white">
+                                        Delete
+                                    </button>
+                                </form>
+                            {% endif %}    
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center py-6 text-blue-600">
+                            No users found.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-between items-center">
+        {% if prev %}
+        <a href="{{ url_for('users_overview', page=page-1) }}"
+           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Prev
+        </a>
+        {% else %}
+        <div></div>
+        {% endif %}
+
+        <span class="text-sm text-gray-500">
+            Page {{ page }}
+        </span>
+
+        {% if next %}
+        <a href="{{ url_for('users_overview', page=page+1) }}"
+           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Next
+        </a>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% extends "dashboard.html" %}
+
+{% block title %}
+    Create Post
+{% endblock %}
+
+{% block main %}
+<div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow border border-blue-600">
+    <h2 class="text-2xl font-semibold text-blue-600 mb-6">Create New Post</h2>
+    <form action="/dashboard/posts/create" method="POST" enctype="multipart/form-data" class="space-y-5">
+        <div>
+            <label class="block text-sm font-medium mb-1 text-blue-400">Post Title</label>
+            <input type="text" name="title" required
+                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-1 text-blue-400">Category</label>
+                <select name="category"
+                    class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                    <option value="">Select category</option>
+                    <option value="news">News</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="tech">Tech</option>
+                    <option value="sports">Sports</option>
+                    <!-- <option value="literature">Literature</option> -->
+                    <option value="opinion">Opinion</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1 text-blue-400">Status</label>
+                <select name="status"
+                    class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                    <option value="draft" selected>Published</option>
+                    <!-- <option value="published">Published</option> -->
+                </select>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+            <div>
+            <label class="block text-sm font-medium mb-1 text-blue-400">Featured Image</label>
+            <input type="file" name="image"
+                class="w-full text-sm">
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1 text-blue-400">Author name</label>
+            <input type="text" disabled name="author"
+                class="w-full text-sm " placeholder="{{ user.name }}">
+        </div>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium mb-1 text-blue-400">Content</label>
+            <textarea name="content" rows="6" required
+                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+                placeholder="Write your post here..."></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t text-blue-400">
+            <a href="/dashboard/posts"
+                class="px-4 py-2 border rounded-lg hover:bg-gray-100">
+                Cancel
+            </a>
+            <button type="submit"
+                class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Publish Post
+            </button>
+        </div>
+
+    </form>
+</div>
+{% endblock %}
+
+{% extends "dashboard.html" %}
+
+{% block title %}
+    Posts 
+{% endblock %}
+
+{% block main %}
+<div class="w-full h-full space-y-4"> 
+    <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-semibold">
+            My Posts ({{ posts_count or 0 }})
+        </h2>
+    </div>
+    <div class="overflow-x-auto bg-white shadow rounded-xl border border-gray-200">
+        <table class="w-full text-sm text-left">
+            <thead class="bg-gray-100 border-b">
+                <tr>
+                    <th class="px-6 py-3 font-semibold">Title</th>
+                    <th class="px-6 py-3 font-semibold">Author</th>
+                    <th class="px-6 py-3 font-semibold">Category</th>
+                    <th class="px-6 py-3 font-semibold">Date</th>
+                    <!-- <th class="px-6 py-3 font-semibold text-right">Action</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                {% if posts %}
+                    {% for post in posts %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-6 py-4 font-medium text-gray-800">
+                            {{ post.title }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-600">
+                            {{ post.author_name }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-600">
+                            {{ post.category or "—" }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-500">
+                            {{ post.created_at[:10] }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-6 text-blue-600">
+                            No posts found.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class="flex justify-between items-center">
+        {% if prev %}
+        <a href="{{ url_for('overview_posts', page=page-1) }}"
+           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Prev
+        </a>
+        {% else %}
+        <div></div>
+        {% endif %}
+        <span class="text-sm text-gray-500">
+            Page {{ page }}
+        </span>
+        {% if next %}
+        <a href="{{ url_for('overview_posts', page=page+1) }}"
+           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Next
+        </a>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% extends "dashboard.html" %}
+
+{% block title %}
+    Posts 
+{% endblock %}
+
+{% block main %}
+<div class="w-full h-full space-y-4"> 
+    <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-semibold">
+            {% if user["role"] == "author" %}
+            My Posts ({{ posts_count }})
+            {% else %}
+            All Posts ({{ posts_count }})
+            {% endif %}
+        </h2>
+        <a href="/dashboard/posts/create"
+           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            + Create Post
+        </a>
+    </div>
+    <div class="overflow-x-auto bg-white shadow rounded-xl border border-gray-200">
+        <table class="w-full text-sm text-left">
+            <thead class="bg-gray-100 border-b">
+                <tr>
+                    <th class="px-6 py-3 font-semibold">Title</th>
+                    <th class="px-6 py-3 font-semibold">Author</th>
+                    <th class="px-6 py-3 font-semibold">Category</th>
+                    <th class="px-6 py-3 font-semibold">Date</th>
+                    <th class="px-6 py-3 font-semibold text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if posts %}
+                    {% for post in posts %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-6 py-4 font-medium text-gray-800">
+                            {{ post.title }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-600">
+                            {{ post.author_name }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-600">
+                            {{ post.category or "—" }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-500">
+                            {{ post.created_at[:10] }}
+                        </td>
+                        <td class="px-6 flex justify-between items-center py-4 gap-2 text-right">
+                            <a href="/news?p={{ post.id }}"
+                               class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
+                                View
+                            </a>
+
+                            <button data-modal-target="edit-post-modal-{{ post.id }}" data-modal-toggle="edit-post-modal-{{ post.id }}" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">Edit</button>
+
+                            <button data-modal-target="delete-post-modal-{{ post.id }}" data-modal-toggle="delete-post-modal-{{ post.id }}" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"> Delete </button>
+                        
+                        </td>
+                    </tr>
+                    
+
+                    <div id="delete-post-modal-{{ post.id }}" tabindex="-1" aria-hidden="true"
+                        class="hidden fixed inset-0 z-50 flex justify-center items-center bg-white/90">
+
+                        <div class="bg-white w-full max-w-md rounded-2xl shadow-lg p-6">
+                        
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Confirm Delete</h3>
+                        
+                            <p class="text-sm text-gray-600">
+                                Are you sure you want to delete <strong>{{ post.title }}</strong>?
+                            </p>
+                        
+                            <div class="flex justify-end gap-3 mt-6">
+                                <button type="button" data-modal-hide="delete-post-modal-{{ post.id }}"
+                                    class="px-4 py-2 rounded-lg bg-gray-200">
+                                    Cancel
+                                </button>
+                            
+                                <form action="/dashboard/posts/delete/{{ post.id }}" method="POST">
+                                    <button type="submit"
+                                        class="px-4 py-2 rounded-lg bg-red-600 text-white">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Modal -->
+                    <div id="edit-post-modal-{{ post.id }}" tabindex="-1" aria-hidden="true" 
+                         class="hidden fixed inset-0 z-50 flex justify-center items-center bg-black/50">
+                        <div class="bg-white w-full max-w-2xl rounded-xl shadow-lg p-6 overflow-y-auto max-h-[90vh]">
+                            <div class="flex justify-between items-center mb-6 border-b pb-3">
+                                <h3 class="text-xl font-semibold text-gray-800">Edit Post</h3>
+                                <button type="button" 
+                                        data-modal-hide="edit-post-modal-{{ post.id }}" 
+                                        class="text-gray-500 hover:text-gray-700">✕
+                                </button>
+                            </div>
+                            <form action="/dashboard/posts/edit/{{ post.id }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                                <div>
+                                    <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                                    <input type="text" id="title" name="title" value="{{ post.title }}"
+                                           class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                                    <select id="category" name="category" 
+                                            class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="news" {% if post.category == "news" %}selected{% endif %}>News</option>
+                                        <option value="entertainment" {% if post.category == "entertainment" %}selected{% endif %}>Entertainment</option>
+                                        <option value="tech" {% if post.category == "tech" %}selected{% endif %}>Tech</option>
+                                        <option value="sports" {% if post.category == "sports" %}selected{% endif %}>Sports</option>
+                                        <option value="opinion" {% if post.category == "opinion" %}selected{% endif %}>Opinion</option>
+                                    </select>
+                                </div>
+                                {% if post.image %}
+                                <div>
+                                    <p class="text-sm text-gray-600 mb-2">Current Image:</p>
+                                    <img src="/static/uploads/{{ post.image }}" alt="Post Image"
+                                         class="w-full h-48 object-cover rounded-lg border mb-3">
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <label for="image" class="block text-sm font-medium text-gray-700">Change Image</label>
+                                    <input type="file" id="image" name="image" 
+                                           class="w-full mt-2 text-sm border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
+                                    <textarea id="content" name="content" rows="4"
+                                              class="w-full mt-2 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">{{ post.content }}</textarea>
+                                </div>
+                                <div class="flex justify-end gap-3 mt-6">
+                                    <button type="button" data-modal-hide="edit-post-modal-{{ post.id }}" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">Cancel
+                                    </button>
+                                    <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-6 text-blue-600">
+                            No posts found.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class="flex justify-between items-center">
+        {% if prev %}
+        <a href="{{ url_for('overview_posts', page=page-1) }}"
+           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Prev
+        </a>
+        {% else %}
+        <div></div>
+        {% endif %}
+        <span class="text-sm text-gray-500">
+            Page {{ page }}
+        </span>
+        {% if next %}
+        <a href="{{ url_for('overview_posts', page=page+1) }}"
+           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Next
+        </a>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
+
+
+@import url('https://fonts.googleapis.com/css2?family=Questrial&display=swap');
+
+body {
+    font-family: "Questrial", sans-serif;
+    /* font-weight: 400; */
+    /* font-style: normal; */
+    background-color: #fffeeb;
+}
+
+nav .navbar-brand
+{
+    font-size: xx-large;
+}
+
+nav .navbar-brand .blue
+{
+    color: #537fbe;
+}
+
+nav .navbar-brand .red
+{
+    color: #ea433b;
+}
+
+nav .navbar-brand .yellow
+{
+    color: #f5b82e;
+}
+
+nav .navbar-brand .green
+{
+    color: #2e944b;
+}
+
+.logo{
+    text-decoration: none;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+#updates {
+  display: inline-block;
+  animation: scroll 12s linear infinite;
+}
+
+const home = document.getElementById("home");
+
+home.addEventListener("click", () => {
+  window.location.href = "/";
+});
+
+const btn = document.getElementById("menuBtn");
+const menu = document.getElementById("mobileMenu");
+
+btn.addEventListener("click", () => {
+    menu.classList.toggle("hidden");
+});
+
+
+let headlines = [];
+const ticker = document.getElementById("updates");
+
+const updateUI = () => {
+  ticker.innerHTML = headlines.map(h => 
+    `<a href="/news?p=${h.id}" class="mx-4 hover:underline">🔴 ${h.title}</a>`
+  ).join(" ");
+};
+
+const getHeadlines = () => {
+  fetch("http://127.0.0.1:5000/headlines") 
+    .then(res => res.json())
+    .then(data => {
+      headlines = data;
+      updateUI(); 
+    })
+    .catch(err => console.error("Update failed:", err));
+};
+
+getHeadlines(); 
+setInterval(getHeadlines, 10000);
+console.log(headlines)
+
+const home = document.getElementById("home");
+
+home.addEventListener("click", () => {
+  window.location.href = "/";
+});
+
+const btn = document.getElementById("menuBtn");
+const menu = document.getElementById("mobileMenu");
+
+btn.addEventListener("click", () => {
+    menu.classList.toggle("hidden");
+});
+
+
+let headlines = [];
+const ticker = document.getElementById("updates");
+
+const updateUI = () => {
+  ticker.innerHTML = headlines.map(h => 
+    `<a href="/news?p=${h.id}" class="mx-4 hover:underline">🔴 ${h.title}</a>`
+  ).join(" ");
+};
+
+const getHeadlines = () => {
+  fetch("http://127.0.0.1:5000/headlines") 
+    .then(res => res.json())
+    .then(data => {
+      headlines = data;
+      updateUI(); 
+    })
+    .catch(err => console.error("Update failed:", err));
+};
+
+getHeadlines(); 
+setInterval(getHeadlines, 10000);
+console.log(headlines)
+
+import requests
+
+from flask import redirect, render_template, session
+from functools import wraps
+
+
+
+def error(message, code=400):
+
+    def escape(s):
+        """
+        Escape special characters.
+
+        https://github.com/jacebrowning/memegen#special-characters
+        """
+        for old, new in [
+            ("-", "--"),
+            (" ", "-"),
+            ("_", "__"),
+            ("?", "~q"),
+            ("%", "~p"),
+            ("#", "~h"),
+            ("/", "~s"),
+            ('"', "''"),
+        ]:
+            s = s.replace(old, new)
+        return s
+
+    return render_template("error.html", top=code, bottom=escape(message)), code
+
+
+def login_required(f):
+    """
+    Decorate routes to require login.
+
+    https://flask.palletsprojects.com/en/latest/patterns/viewdecorators/
+    """
+
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get("user_id") is None:
+            return redirect("/login")
+        return f(*args, **kwargs)
+
+    return decorated_function

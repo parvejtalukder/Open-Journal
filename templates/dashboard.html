@@ -15,7 +15,7 @@
     <body class="max-w-6xl mx-auto transition-all duration-500">
     <header class="sticky z-50 top-2">    
       {% if get_flashed_messages() %}
-      <div class="fixed z-50 bottom-4 right-4 left-1/2 transform -translate-x-1/2 md:left-auto md:translate-x-0">
+      <div id="flash-message" class="fixed z-50 bottom-4 right-4 left-1/2 transform -translate-x-1/2 md:left-auto md:translate-x-0">
           <div class="bg-blue-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm animate-fade-in">
               {{ get_flashed_messages() | join(" ") }}
           </div>
