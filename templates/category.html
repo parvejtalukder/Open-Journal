@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    CAT:{{ name }} News
+{% endblock %}
+
+{% block main %}
+
+<section class="max-w-6xl mx-auto px-4 pt-10">
+
+  <h1 class="text-3xl md:text-4xl font-bold mb-8 hover:text-blue-600">
+    CAT: {{ name }}
+  </h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    {% for post in posts %}
+    <a href="/post/{{ post.id }}" class="block border rounded-2xl shadow hover:shadow-lg transition overflow-hidden">
+
+      <img src="/static/uploads/{{ post.image }}" alt="News Image"
+           class="w-full h-48 object-cover">
+
+      <div class="p-4">
+        <h2 class="text-xl font-semibold mb-2 hover:text-blue-600">
+          {{ post.title }}
+        </h2>
+
+        <p class="text-gray-600 text-sm mb-2">
+          {{ post.created_at }}
+        </p>
+
+        <p class="text-gray-700 line-clamp-3">
+          {{ post.content }}
+        </p>
+      </div>
+
+    </a>
+    {% endfor %}
+    </div>
+    <div class="flex justify-between mt-10">
+
+    {% if page > 1 %}
+    <a href="/category/{{ name }}?page={{ page - 1 }}"
+       class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-400">
+      Prev
+    </a>
+    {% endif %}
+
+    {% if next %}
+    <a href="/category/{{ name }}?page={{ page + 1 }}"
+       class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-400 ml-auto">
+      Next 
+    </a>
+    {% endif %}
+
+</div>
+
+</section>
+
+{% endblock %}

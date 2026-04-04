@@ -527,6 +527,48 @@ def page():
 
     return render_template("/page.html", page=page)
 
+@app.route("/category/<string:name>")
+def category(name):
+    page = request.args.get("page", 1, type=int)
+    per_page = 3
+
+    offset = (page - 1) * per_page
+
+    posts = db.execute(
+        "SELECT * FROM posts WHERE category = ? ORDER BY created_at DESC LIMIT ? OFFSET ?",
+        name, per_page, offset
+    )
+
+    total = db.execute(
+        "SELECT COUNT(*) as count FROM posts WHERE category = ?",
+        name
+    )[0]["count"]
+
+    next = offset + per_page < total
+
+    return render_template("category.html", posts=posts, name=name, page=page, next=next)
+
+@app.route("/posts")
+def all_posts():
+    page = request.args.get("page", 1, type=int)
+    per_page = 6
+
+    offset = (page - 1) * per_page
+
+    posts = db.execute(
+        "SELECT * FROM posts ORDER BY created_at DESC LIMIT ? OFFSET ?",
+        per_page, offset
+    )
+
+    total = db.execute(
+        "SELECT COUNT(*) as count FROM posts"
+    )[0]["count"]
+
+    next = offset + per_page < total
+
+    return render_template( "/posts.html", posts=posts, page=page, next=next)
+
+
 @app.route("/dashboard/reset-password", methods=["GET", "POST"])
 @login_required
 @role_required("admin", "author", "reader")
