@@ -45,7 +45,7 @@ const updateUI = () => {
 };
 
 const getHeadlines = () => {
-  fetch("http://localhost:5000/headlines") 
+  fetch("/headlines") 
     .then(res => res.json())
     .then(data => {
       headlines = data;

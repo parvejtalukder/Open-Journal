@@ -124,17 +124,6 @@ There are several features that could be added in the future to enhance the plat
 
 These improvements would make the platform more interactive and closer to a production-level CMS.
 
----
-
-## Note  
-
-Tailwind CSS was used due to familiarity with utility-first design, allowing rapid development of responsive and consistent UI components. Flowbite components were integrated in parts of the dashboard and homepage to speed up development and maintain visual consistency.
-
-Some features, particularly pagination, were implemented after learning concepts with the help of AI tools such as ChatGPT. These tools were used strictly as learning aids to understand SQL queries (LIMIT/OFFSET) and pagination logic. The final implementation was written, adapted, and tested independently.
-
-Prior full-stack (MERN) experience influenced the structure of the application, especially in separating frontend and backend concerns. Tools such as Werkzeug (for password hashing) and UUID (for file handling) were explored and integrated into the project.
-
-Concepts from previous CS50 projects were adapted after full understanding, and additional SQLite resources were used to strengthen database handling. The role-based access system was implemented using custom logic tailored specifically for this CMS.
 
 ---
 
