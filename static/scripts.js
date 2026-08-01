@@ -27,12 +27,12 @@ if (notice) {
 if (dashba) {
   dashba.classList.remove("hidden");
   setTimeout(() => {
-    notice.classList.add("opacity-0", "transition", "duration-1000");
+    dashba.classList.add("opacity-0", "transition", "duration-1000");
     setTimeout(() => {
-      notice.classList.add("hidden");
-      notice.classList.remove("opacity-0", "transition", "duration-1000");
-    }, 1000)
-  }, 3000)
+      dashba.classList.add("hidden");
+      dashba.classList.remove("opacity-0", "transition", "duration-1000");
+    }, 1000);
+  }, 3000);
 }
 
 let headlines = [];

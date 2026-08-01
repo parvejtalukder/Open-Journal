@@ -2,7 +2,7 @@
 
 {% block title %}
     Pending applications 
-{% endblock %} user
+{% endblock %}
 
 {% block main %}
 <div class="w-full h-full space-y-4"> 
@@ -38,51 +38,14 @@
                         <td class="px-6 py-4 text-gray-500">
                             {{ application.created_at[:10] }}
                         </td>
-                        <td class="px-6 flex justify-between items-center py-4 gap-2 text-right">
-                            <!-- <td class="px-6 py-4 text-right"> -->
-                                <button 
-                                    data-modal-target="modal-{{ application.id }}" 
-                                    data-modal-toggle="modal-{{ application.id }}"
-                                    class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
-                                    Review
-                                </button>
-                            <!-- </td> -->
+                        <td class="px-6 py-4 text-right">
+                            <button 
+                                data-modal-target="modal-{{ application.id }}" 
+                                data-modal-toggle="modal-{{ application.id }}"
+                                class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                                Review
+                            </button>
                         </td>
-                        <div id="modal-{{ application.id }}" tabindex="-1" aria-hidden="true"
-                             class="hidden fixed inset-0 z-50 flex justify-center items-center bg-white/96">
-                            <div class="bg-white w-full max-w-lg rounded-2xl shadow-lg p-6">
-                                <div class="flex justify-between items-center mb-4">
-                                    <h3 class="text-lg font-semibold text-gray-800">Review Application</h3>
-                                    <button data-modal-hide="modal-{{ application.id }}" class="text-blue-600 hover:text-blue-800">✕</button>
-                                </div>
-                                <div class="space-y-3">
-                                    <p class="text-sm text-blue-600">
-                                        <span class="font-medium text-blue-800">User:</span>
-                                        {{ application.username }}
-                                    </p>
-                                    <p class="text-sm text-blue-600">
-                                        <span class="font-medium text-blue-800">Message:</span><br>
-                                        {{ application.message }}
-                                    </p>
-                                </div>
-                                <div class="flex justify-end gap-3 mt-6">
-                                    <form action="/dashboard/applications/edit/{{ application.id }}" method="post">
-                                        <input type="hidden" name="status" value="rejected">
-                                        <button type="submit"
-                                            class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">
-                                            Reject
-                                        </button>
-                                    </form>
-                                    <form action="/dashboard/applications/edit/{{ application.id }}" method="post">
-                                        <input type="hidden" name="status" value="approved">
-                                        <button type="submit"
-                                            class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700">
-                                            Accept
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                     </tr>
                     {% endfor %}
                 {% else %} 
@@ -95,6 +58,47 @@
             </tbody>
         </table>
     </div>
+
+    {% if applications %}
+        {% for application in applications %}
+        <div id="modal-{{ application.id }}" tabindex="-1" aria-hidden="true"
+             class="hidden fixed inset-0 z-50 flex justify-center items-center bg-white/96">
+            <div class="bg-white w-full max-w-lg rounded-2xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Review Application</h3>
+                    <button data-modal-hide="modal-{{ application.id }}" class="text-blue-600 hover:text-blue-800">✕</button>
+                </div>
+                <div class="space-y-3">
+                    <p class="text-sm text-blue-600">
+                        <span class="font-medium text-blue-800">User:</span>
+                        {{ application.username }}
+                    </p>
+                    <p class="text-sm text-blue-600">
+                        <span class="font-medium text-blue-800">Message:</span><br>
+                        {{ application.message }}
+                    </p>
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <form action="/dashboard/applications/edit/{{ application.id }}" method="post">
+                        <input type="hidden" name="status" value="rejected">
+                        <button type="submit"
+                            class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">
+                            Reject
+                        </button>
+                    </form>
+                    <form action="/dashboard/applications/edit/{{ application.id }}" method="post">
+                        <input type="hidden" name="status" value="approved">
+                        <button type="submit"
+                            class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700">
+                            Accept
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+
     <script src="https://unpkg.com/flowbite@latest/dist/flowbite.min.js"></script>
 </div>
 {% endblock %}

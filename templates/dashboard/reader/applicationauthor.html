@@ -9,7 +9,7 @@
     <div class="w-full lg:w-2/3 bg-white border border-blue-200 rounded-2xl shadow p-6">
         {% if status == "pending" %}
             <p class="pb-2 underline-offset-1 text-yellow-600 text-center font-medium">Your application is under review</p>
-        {% elif status == "accepted" %}
+        {% elif status == "approved" %}
             <p class="pb-2 underline-offset-1 text-green-600 text-center font-medium">You have been approved as an author!</p>
         {% elif status == "rejected" %}
             <p class="pb-2 underline-offset-1 text-red-600 text-center font-medium">Your application was rejected</p>
@@ -27,7 +27,7 @@
                 </div>
 
                 <div>
-                <label class="text-sm text-blue-600">Name</label>
+                <label class="text-sm text-blue-600">Username</label>
                 <input required name="username" value="{{ user.username }}" disabled type="text" placeholder="Username" class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
             </div>
@@ -37,7 +37,7 @@
             <textarea required name="message" rows="5" placeholder="Share your experience, interests, or writing style..." class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             ></textarea>
             </div>
-            {% if status in ["pending","accepted"] %}
+            {% if status in ["pending","approved"] %}
             <button disabled type="submit" class="mt-2 bg-blue-600 hover:bg-blue-700/20 text-white py-3 rounded-xl transition font-medium">Submit Application</button>
             {% else %}
             <button type="submit" class="mt-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition font-medium">Submit Application</button>
